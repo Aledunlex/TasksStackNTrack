@@ -2,7 +2,6 @@ package com.tsnt.entities;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
