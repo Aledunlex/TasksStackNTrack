@@ -26,12 +26,7 @@ public class Task {
   
   private String description;
   
-  @ManyToMany
-  @JoinTable(
-      name = "task_property_link",
-      joinColumns = @JoinColumn(name = "task_id"),
-      inverseJoinColumns = @JoinColumn(name = "property_id")
-  )
+  @OneToMany(mappedBy = "task")
   private Set<TaskProperty> properties = new HashSet<>();
   
   public Task() {
@@ -64,7 +59,7 @@ public class Task {
     } else {
       properties.add(property);
     }
-    property.addTask(this);
+    property.setTask(this);
   }
   
   @Override
@@ -79,7 +74,11 @@ public class Task {
       return false;
     }
     Task otherTask = (Task) other;
-    return this.id.equals(otherTask.getId()) && this.title.equalsIgnoreCase(otherTask.getTitle());
+    boolean equalTitles = this.title.equalsIgnoreCase(otherTask.getTitle());
+    if (this.id == null || otherTask.getId() == null) {
+      return equalTitles;
+    }
+    return this.id.equals(otherTask.getId()) && equalTitles;
   }
   
   @Override
@@ -90,10 +89,6 @@ public class Task {
   @Override
   public String toString() {
     return String.format("Task[%s, %s, %s]", this.title, this.description, this.properties);
-  }
-  
-  public void setId(Long id) {
-    throw new UnsupportedOperationException("Cannot set id on Task");
   }
   
 }

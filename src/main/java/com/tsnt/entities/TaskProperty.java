@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -18,13 +16,14 @@ public class TaskProperty {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   
-  @ManyToMany(mappedBy = "properties")
-  private Set<Task> tasks = new HashSet<>();
+  @ManyToOne
+  @JoinColumn(name = "task_id")
+  private Task task;
   
   private String propertyValue;
   
   @Column(nullable = false)
-  private final String name;
+  private String name;
   
   public TaskProperty() {
     this.name = NEW_PROPERTY;
@@ -39,13 +38,10 @@ public class TaskProperty {
     this.propertyValue = propertyValue;
   }
   
-  public TaskProperty(String name, String propertyValue, Set<Task> tasks) {
+  public TaskProperty(String name, String propertyValue, Task task) {
     this.name = name;
-    this.tasks = tasks;
-  }
-  
-  public void addTask(Task task) {
-    tasks.add(task);
+    this.propertyValue = propertyValue;
+    this.task = task;
   }
   
   public void addToOtherProperty(TaskProperty property) {
@@ -79,10 +75,6 @@ public class TaskProperty {
   @Override
   public String toString() {
     return String.format("TaskProperty[%s, %s]", this.name, this.propertyValue);
-  }
-  
-  public void setId(Long id) {
-    throw new UnsupportedOperationException("Cannot set id on TaskProperty");
   }
   
 }

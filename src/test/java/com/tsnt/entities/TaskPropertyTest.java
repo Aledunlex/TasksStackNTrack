@@ -39,20 +39,20 @@ class TaskPropertyTest {
     String value = "Property Value";
     Task task = new Task();
     TaskProperty property = new TaskProperty(name, value);
-    property.addTask(task);
+    property.setTask(task);
     
     assertEquals(name, property.getName());
     assertEquals(value, property.getPropertyValue());
-    assertEquals(task, property.getTasks().stream().findFirst().get());
+    assertEquals(task, property.getTask());
   }
   
   @Test
   void addTaskToTaskProperty() {
     Task task = new Task();
     TaskProperty property = new TaskProperty();
-    property.addTask(task);
+    property.setTask(task);
     
-    assertEquals(task, property.getTasks().stream().findFirst().get());
+    assertEquals(task, property.getTask());
   }
   
   @Test
@@ -80,13 +80,6 @@ class TaskPropertyTest {
     property1.subtractFromOtherProperty(property2);
     
     assertEquals("Property Value 1", property1.getPropertyValue());
-  }
-  
-  @Test
-  void cantSetNewId() {
-    TaskProperty property = new TaskProperty();
-    
-    assertThrows(UnsupportedOperationException.class, () -> property.setId(1L));
   }
   
 }

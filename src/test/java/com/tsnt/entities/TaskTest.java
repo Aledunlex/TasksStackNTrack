@@ -2,7 +2,10 @@ package com.tsnt.entities;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,13 +61,14 @@ class TaskTest {
     Task task = new Task();
     String propertyValue1 = "Property Value 1";
     String propertyValue2 = "Property Value 2";
+    String addedValues = propertyValue1 + propertyValue2;
     String propertyName = "Property Name";
     TaskProperty property1 = new TaskProperty(propertyName, propertyValue1);
     TaskProperty property2 = new TaskProperty(propertyName, propertyValue2);
     task.addProperty(property1);
     task.addProperty(property2);
     
-    assertEquals(propertyValue1 + propertyValue2, task.getProperties().stream()
+    assertEquals(addedValues, task.getProperties().stream()
         .filter(p -> p.getName().equals(propertyName))
         .findFirst()
         .get()
@@ -76,13 +80,14 @@ void createTaskWithPropertiesWithSameNameAndDifferentCase() {
     Task task = new Task();
     String propertyValue1 = "Property Value 1";
     String propertyValue2 = "Property Value 2";
+    String addedValues = propertyValue1 + propertyValue2;
     String propertyName = "Property Name";
     TaskProperty property1 = new TaskProperty(propertyName, propertyValue1);
     TaskProperty property2 = new TaskProperty(propertyName.toUpperCase(), propertyValue2);
     task.addProperty(property1);
     task.addProperty(property2);
     
-    assertEquals(propertyValue1 + propertyValue2, task.getProperties().stream()
+    assertEquals(addedValues, task.getProperties().stream()
         .filter(p -> p.getName().equals(propertyName))
         .findFirst()
         .get()
@@ -94,13 +99,14 @@ void createTaskWithPropertiesWithSameNameAndDifferentCase() {
     Task task = new Task();
     String propertyValue1 = "Property Value 1";
     String propertyValue2 = "Property Value 2";
+    String addedValues = propertyValue1 + propertyValue2;
     String propertyName = "Property Name";
     TaskProperty property1 = new TaskProperty(propertyName, propertyValue1);
     TaskProperty property2 = new TaskProperty(propertyName.toUpperCase(), propertyValue2);
     task.addProperty(property1);
     task.addProperty(property2);
     
-    assertNotEquals(propertyValue1, task.getProperties().stream()
+    assertEquals(addedValues, task.getProperties().stream()
         .filter(p -> p.getName().equals(propertyName))
         .findFirst()
         .get()
@@ -108,27 +114,60 @@ void createTaskWithPropertiesWithSameNameAndDifferentCase() {
   }
   
   @Test
-  void createTaskWithPropertiesWithSameNameAndDifferentCaseAndSameValue() {
-    Task task = new Task();
-    String propertyValue1 = "Property Value 1";
-    String propertyName = "Property Name";
-    TaskProperty property1 = new TaskProperty(propertyName, propertyValue1);
-    TaskProperty property2 = new TaskProperty(propertyName.toUpperCase(), propertyValue1);
-    task.addProperty(property1);
-    task.addProperty(property2);
-    
-    assertNotEquals(propertyValue1, task.getProperties().stream()
-        .filter(p -> p.getName().equals(propertyName))
-        .findFirst()
-        .get()
-        .getPropertyValue());
+  void twoNewTasksAreEqual() {
+    Task task1 = new Task();
+    Task task2 = new Task();
+    assertEquals(task1, task2);
   }
   
   @Test
-  void cantSetNewId() {
-    Task task = new Task();
-    
-    assertThrows(UnsupportedOperationException.class, () -> task.setId(1L));
+  void twoTasksWithDifferentDescriptionsCanBeEqual() {
+    Task task1 = new Task();
+    Task task2 = new Task();
+    task1.setDescription("Some Description");
+    assertEquals(task1, task2);
+  }
+  
+  @Test
+  void twoTasksWithDifferentPropertiesCanBeEqual() {
+    Task task1 = new Task();
+    Task task2 = new Task();
+    task1.setProperties(new HashSet<>(
+        List.of(new TaskProperty("Property Name", "Property Value"))
+    ));
+    assertEquals(task1, task2);
+  }
+  
+  @Test
+  void twoTasksWithDifferentTitlesAndNoIdAreNotEqual() {
+    Task task1 = new Task();
+    Task task2 = new Task();
+    assertNull(task1.getId());
+    task1.setTitle("Task 1");
+    assertNotEquals(task1, task2);
+  }
+ 
+  @Test
+  void twoTasksWithOneOfThemWithoutIdAreComparedByTitle() {
+    Task task1 = new Task();
+    Task task2 = new Task();
+    task1.setId(1L);
+    task1.setTitle("Task 1");
+    task2.setTitle("Task 1");
+    assertEquals(task1, task2);
+    task2.setTitle("Task 2");
+    assertNotEquals(task1, task2);
+  }
+  
+  @Test
+  void twoTasksWithDifferentIdsButSameTitleAreNotEqual() {
+    Task task1 = new Task();
+    Task task2 = new Task();
+    task1.setId(1L);
+    task2.setId(2L);
+    task1.setTitle("Task 1");
+    task2.setTitle("Task 1");
+    assertNotEquals(task1, task2);
   }
   
 }
