@@ -19,7 +19,7 @@ public class PropertyValue {
   @Column(nullable = false)
   private String value;
   
-  @ManyToOne(cascade = CascadeType.PERSIST)
+  @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "property_id", nullable = false)
   private Property property;
   

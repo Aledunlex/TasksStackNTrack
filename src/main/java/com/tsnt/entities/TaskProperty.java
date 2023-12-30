@@ -18,7 +18,7 @@ public class TaskProperty {
   @JoinColumn(name = "task_id")
   private Task task;
   
-  @ManyToOne(cascade = CascadeType.PERSIST)
+  @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "property_value_id")
   private PropertyValue propertyValue;
   
