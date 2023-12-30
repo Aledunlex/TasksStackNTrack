@@ -7,42 +7,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TaskPropertyTest {
   
   @Test
-  void createTaskPropertyWithoutName() {
-    String name = "New Property";
-    TaskProperty property = new TaskProperty();
-    
-    assertEquals(name, property.getName());
-  }
-  
-  @Test
-  void createTaskPropertyWithName() {
-    String name = "Property Name";
-    TaskProperty property = new TaskProperty(name);
-    
-    assertEquals(name, property.getName());
-  }
-  
-  @Test
-  void createTaskPropertyWithNameAndValue() {
-    String name = "Property Name";
+  void createTaskPropertyWithoutPropertyValue() {
     String value = "Property Value";
-    TaskProperty property = new TaskProperty(name, value);
+    TaskProperty taskProperty = new TaskProperty();
+    taskProperty.setPropertyValue(new PropertyValue(value));
     
-    assertEquals(name, property.getName());
-    assertEquals(value, property.getPropertyValue());
+    assertEquals(value, taskProperty.getPropertyValue().getValue());
   }
   
   @Test
-  void createTaskPropertyWithNameAndValueAndTasks() {
-    String name = "Property Name";
+  void createTaskPropertyWithPropertyValue() {
     String value = "Property Value";
-    Task task = new Task();
-    TaskProperty property = new TaskProperty(name, value);
-    property.setTask(task);
+    PropertyValue propertyValue = new PropertyValue(value);
+    TaskProperty taskProperty = new TaskProperty(propertyValue);
     
-    assertEquals(name, property.getName());
-    assertEquals(value, property.getPropertyValue());
-    assertEquals(task, property.getTask());
+    assertEquals(propertyValue, taskProperty.getPropertyValue());
   }
   
   @Test
@@ -61,24 +40,6 @@ class TaskPropertyTest {
     task.addProperty(property);
     
     assertEquals(property, task.getProperties().stream().findFirst().get());
-  }
-  
-  @Test
-  void subtractFromOtherPropertyBothSameValue() {
-    TaskProperty property1 = new TaskProperty("Property Name", "Property Value");
-    TaskProperty property2 = new TaskProperty("Property Name", "Property Value");
-    property1.subtractFromOtherProperty(property2);
-    
-    assertEquals("", property1.getPropertyValue());
-  }
-  
-  @Test
-  void subtractFromOtherPropertyBothDifferentValue() {
-    TaskProperty property1 = new TaskProperty("Property Name", "Property Value 1");
-    TaskProperty property2 = new TaskProperty("Property Name", "Property Value 2");
-    property1.subtractFromOtherProperty(property2);
-    
-    assertEquals("Property Value 1", property1.getPropertyValue());
   }
   
 }

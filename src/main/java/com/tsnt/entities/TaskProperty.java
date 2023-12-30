@@ -10,8 +10,6 @@ import javax.persistence.*;
 @Setter
 public class TaskProperty {
   
-  private static final String NEW_PROPERTY = "New Property";
-  
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -20,36 +18,19 @@ public class TaskProperty {
   @JoinColumn(name = "task_id")
   private Task task;
   
-  private String propertyValue;
+  @ManyToOne
+  @JoinColumn(name = "property_value_id")
+  private PropertyValue propertyValue;
   
-  @Column(nullable = false)
-  private String name;
+  public TaskProperty() {}
   
-  public TaskProperty() {
-    this.name = NEW_PROPERTY;
-  }
-  
-  public TaskProperty(String name) {
-    this.name = name;
-  }
-  
-  public TaskProperty(String name, String propertyValue) {
-    this.name = name;
+  public TaskProperty(PropertyValue propertyValue) {
     this.propertyValue = propertyValue;
   }
   
-  public TaskProperty(String name, String propertyValue, Task task) {
-    this.name = name;
+  public TaskProperty(PropertyValue propertyValue, Task task) {
     this.propertyValue = propertyValue;
     this.task = task;
-  }
-  
-  public void addToOtherProperty(TaskProperty property) {
-    this.propertyValue += property.getPropertyValue();
-  }
-  
-  public void subtractFromOtherProperty(TaskProperty property) {
-    this.propertyValue = this.propertyValue.replace(property.getPropertyValue(), "");
   }
   
   @Override
@@ -64,17 +45,23 @@ public class TaskProperty {
       return false;
     }
     TaskProperty otherProperty = (TaskProperty) other;
-    return this.name.equalsIgnoreCase(otherProperty.getName());
+    if (this.id == null || otherProperty.getId() == null) {
+      return this.task.equals(otherProperty.getTask());
+    }
+    return this.id.equals(otherProperty.getId()) && this.task.equals(otherProperty.getTask());
   }
   
   @Override
   public int hashCode() {
-    return this.name.toLowerCase().hashCode();
+    if (this.id == null) {
+      return task == null ? 0 : task.hashCode();
+    }
+    return this.id.hashCode();
   }
   
   @Override
   public String toString() {
-    return String.format("TaskProperty[%s, %s]", this.name, this.propertyValue);
+    return String.format("TaskProperty[%s, %s]", this.task, this.propertyValue);
   }
   
 }

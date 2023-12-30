@@ -49,16 +49,7 @@ public class Task {
   }
   
   public void addProperty(TaskProperty property) {
-    // If the property is already in the set, add the properties values together
-    if (properties.contains(property)) {
-      properties.stream()
-          .filter(p -> p.equals(property))
-          .findFirst()  // Only be one property with the same name
-          .get()
-          .addToOtherProperty(property);
-    } else {
-      properties.add(property);
-    }
+    properties.add(property);
     property.setTask(this);
   }
   

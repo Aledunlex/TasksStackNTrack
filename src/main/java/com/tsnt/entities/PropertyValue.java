@@ -57,7 +57,10 @@ public class PropertyValue {
   
   @Override
   public int hashCode() {
-    return this.id.hashCode() + this.value.hashCode();
+    if (this.id == null) {
+      return this.value.toLowerCase().hashCode();
+    }
+    return this.id.hashCode() + this.value.toLowerCase().hashCode();
   }
   
   @Override
