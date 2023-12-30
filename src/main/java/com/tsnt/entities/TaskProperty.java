@@ -18,7 +18,7 @@ public class TaskProperty {
   @JoinColumn(name = "task_id")
   private Task task;
   
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.PERSIST)
   @JoinColumn(name = "property_value_id")
   private PropertyValue propertyValue;
   
@@ -46,22 +46,25 @@ public class TaskProperty {
     }
     TaskProperty otherProperty = (TaskProperty) other;
     if (this.id == null || otherProperty.getId() == null) {
+      if (this.task == null || otherProperty.getTask() == null) {
+        return this.task == otherProperty.getTask();
+      }
       return this.task.equals(otherProperty.getTask());
+    }
+    if (this.task == null || otherProperty.getTask() == null) {
+      return false;
     }
     return this.id.equals(otherProperty.getId()) && this.task.equals(otherProperty.getTask());
   }
   
   @Override
   public int hashCode() {
-    if (this.id == null) {
-      return task == null ? 0 : task.hashCode();
-    }
-    return this.id.hashCode();
+    return this.id == null ? 0 : this.id.hashCode();
   }
   
   @Override
   public String toString() {
-    return String.format("TaskProperty[%s, %s]", this.task, this.propertyValue);
+    return String.format("TaskProperty[%s, %s]", this.id, this.propertyValue);
   }
   
 }

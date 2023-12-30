@@ -37,9 +37,9 @@ class TaskPropertyTest {
   void addTaskPropertyToTask() {
     Task task = new Task();
     TaskProperty property = new TaskProperty();
-    task.addProperty(property);
+    task.addTaskProperty(property);
     
-    assertEquals(property, task.getProperties().stream().findFirst().get());
+    assertEquals(property, task.getTaskProperties().stream().findFirst().get());
   }
   
 }

@@ -26,8 +26,8 @@ public class Task {
   
   private String description;
   
-  @OneToMany(mappedBy = "task")
-  private Set<TaskProperty> properties = new HashSet<>();
+  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<TaskProperty> taskProperties = new HashSet<>();
   
   public Task() {
     this.title = NEW_TASK;
@@ -42,14 +42,14 @@ public class Task {
     this.description = description;
   }
   
-  public Task(String title, String description, Set<TaskProperty> properties) {
+  public Task(String title, String description, Set<TaskProperty> taskProperties) {
     this.title = title;
     this.description = description;
-    this.properties = properties;
+    this.taskProperties = taskProperties;
   }
   
-  public void addProperty(TaskProperty property) {
-    properties.add(property);
+  public void addTaskProperty(TaskProperty property) {
+    taskProperties.add(property);
     property.setTask(this);
   }
   
@@ -74,12 +74,12 @@ public class Task {
   
   @Override
   public int hashCode() {
-    return this.title.toLowerCase().hashCode() + this.properties.stream().mapToInt(TaskProperty::hashCode).sum();
+    return this.title.toLowerCase().hashCode() + this.taskProperties.stream().mapToInt(TaskProperty::hashCode).sum();
   }
   
   @Override
   public String toString() {
-    return String.format("Task[%s, %s, %s]", this.title, this.description, this.properties);
+    return String.format("Task[%s, %s, %s]", this.title, this.description, this.taskProperties);
   }
   
 }

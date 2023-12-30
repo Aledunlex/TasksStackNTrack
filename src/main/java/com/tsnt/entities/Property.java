@@ -21,7 +21,7 @@ public class Property {
   @Column(nullable = false)
   private String name;
   
-  @OneToMany(mappedBy = "property")
+  @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<PropertyValue> propertyValues = new HashSet<>();
   
   public Property() {

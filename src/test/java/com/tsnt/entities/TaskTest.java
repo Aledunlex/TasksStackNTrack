@@ -3,8 +3,6 @@ package com.tsnt.entities;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,9 +42,9 @@ class TaskTest {
     String propertyValue = "Property Value";
     String propertyName = "Property Name";
     TaskProperty property = new TaskProperty(new PropertyValue(propertyValue, new Property(propertyName)));
-    task.addProperty(property);
+    task.addTaskProperty(property);
     
-    assertEquals(propertyValue, task.getProperties().stream()
+    assertEquals(propertyValue, task.getTaskProperties().stream()
         .filter(p -> p.getPropertyValue().getValue().equals(propertyValue))
         .findFirst()
         .get()
