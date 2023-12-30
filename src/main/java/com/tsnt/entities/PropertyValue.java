@@ -20,7 +20,7 @@ public class PropertyValue {
   private String value;
   
   @ManyToOne(cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "property_id")
+  @JoinColumn(name = "property_id", nullable = false)
   private Property property;
   
   public PropertyValue() {
