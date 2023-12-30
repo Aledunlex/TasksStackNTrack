@@ -14,7 +14,7 @@ import org.springframework.data.domain.Page;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class TaskRepositoryTest {
+class TaskRepositoryTest {
   
   @Autowired
   private TaskRepository taskRepository;
