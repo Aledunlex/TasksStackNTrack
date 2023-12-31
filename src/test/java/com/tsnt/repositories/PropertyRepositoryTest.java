@@ -50,4 +50,15 @@ class PropertyRepositoryTest {
     assertEquals(3, properties.getContent().size());
   }
   
+  @Test
+  void findByNameIgnoreCase() {
+    String propertyName = "Test Property";
+    Property property = new Property(propertyName);
+    
+    propertyRepository.save(property);
+    
+    assertTrue(propertyRepository.findByNameIgnoreCase(propertyName.toUpperCase()).isPresent());
+    assertEquals(property, propertyRepository.findByNameIgnoreCase(propertyName).get());
+  }
+  
 }
