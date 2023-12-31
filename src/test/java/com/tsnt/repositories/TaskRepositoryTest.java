@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -49,9 +52,6 @@ class TaskRepositoryTest {
     
     Page<Task> byDescription = taskRepository.findAllByDescriptionContainingIgnoreCaseOrderByCreationDateDesc(newDescription, null);
     assertTrue(byDescription.getContent().contains(task));
-    
-    Page<Task> byValue = taskRepository.findAllByTaskPropertiesPropertyValueValueContainingIgnoreCaseOrderByCreationDateDesc(valueOne, null);
-    assertTrue(byValue.getContent().contains(task));
     
     Page<Task> byPropertyName = taskRepository.findAllByTaskPropertiesPropertyValuePropertyNameContainingIgnoreCaseOrderByCreationDateDesc(propertyNameOne, null);
     assertTrue(byPropertyName.getContent().contains(task));
@@ -125,9 +125,6 @@ class TaskRepositoryTest {
     Page<Task> byDescription = taskRepository.findAllByDescriptionContainingIgnoreCaseOrderByCreationDateDesc(newDescriptionName, null);
     assertTrue(byDescription.getContent().contains(task));
     
-    Page<Task> byValue = taskRepository.findAllByTaskPropertiesPropertyValueValueContainingIgnoreCaseOrderByCreationDateDesc(newValueOne, null);
-    assertTrue(byValue.getContent().contains(task));
-    
     Page<Task> byPropertyName = taskRepository.findAllByTaskPropertiesPropertyValuePropertyNameContainingIgnoreCaseOrderByCreationDateDesc(newPropertyNameOne, null);
     assertTrue(byPropertyName.getContent().contains(task));
   }
@@ -186,6 +183,25 @@ class TaskRepositoryTest {
     assertEquals(taskTwo, taskRepository.findAll().get(1));
     assertTrue(taskRepository.findById(task.getId()).isPresent());
     assertTrue(taskRepository.findById(taskTwo.getId()).isPresent());
+  }
+  
+  @Test
+  void findAllByOrderByCreationDateDescTest() {
+    for (int i = 0; i < 3; i++) {
+      Task task = new Task();
+      taskRepository.save(task);
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+    
+    Page<Task> allByOrderByCreationDateDesc = taskRepository.findAllByOrderByCreationDateDesc(null);
+    List<Task> tasks = new ArrayList<>(allByOrderByCreationDateDesc.getContent());
+    for (int i = 0; i < tasks.size() - 1; i++) {
+      assertTrue(tasks.get(i).getCreationDate().after(tasks.get(i + 1).getCreationDate()));
+    }
   }
   
 }

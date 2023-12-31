@@ -17,11 +17,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
   // Finds all tasks with a description containing the given string
   Page<Task> findAllByDescriptionContainingIgnoreCaseOrderByCreationDateDesc(String description, Pageable pageable);
   
-  // Finds all tasks who have a property with at least one TaskProperty whose PropertyValue has a value equals to the given string
-  Page<Task> findAllByTaskPropertiesPropertyValueValueContainingIgnoreCaseOrderByCreationDateDesc(String value, Pageable pageable);
-  
   // Finds all tasks who have a property with at least one TaskProperty whose Property has a name equals to the given string
   Page<Task> findAllByTaskPropertiesPropertyValuePropertyNameContainingIgnoreCaseOrderByCreationDateDesc(String name, Pageable pageable);
 
   Optional<Task> findById(Long id);
+  
 }
