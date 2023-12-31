@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-class PropertyValueTest {
+class PropertyValueRepositoryTest {
   
   @Autowired
   private PropertyValueRepository propertyValueRepository;
