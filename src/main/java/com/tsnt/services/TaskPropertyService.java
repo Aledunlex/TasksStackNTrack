@@ -4,6 +4,7 @@ import com.tsnt.entities.TaskProperty;
 import com.tsnt.repositories.TaskPropertyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class TaskPropertyService {
    * @param taskProperty the task property to create
    * @return the created task property
    */
+  @Transactional
   public TaskProperty createTaskProperty(TaskProperty taskProperty) {
     if (taskProperty.getId() != null && taskPropertyRepository.existsById(taskProperty.getId()))
       throw new IllegalStateException("Task property " + taskProperty.getId() + " already exists");
@@ -44,6 +46,7 @@ public class TaskPropertyService {
    * @param id the id of the task property to get
    * @return the task property with the given id
    */
+  @Transactional(readOnly = true)
   public TaskProperty getTaskPropertyById(Long id) {
     return taskPropertyRepository.findById(id).orElse(null);
   }
@@ -52,6 +55,7 @@ public class TaskPropertyService {
    * Gets all task properties by task id.
    * @return all task properties with the given task id
    */
+  @Transactional(readOnly = true)
   public List<TaskProperty> getTaskPropertyByTaskId(Long taskId) {
     return taskPropertyRepository.findByTaskId(taskId, null).getContent();
   }
@@ -60,6 +64,7 @@ public class TaskPropertyService {
    * Gets all task properties by property value id.
    * @return all task properties with the given property value id
    */
+  @Transactional(readOnly = true)
   public List<TaskProperty> getTaskPropertyByPropertyValueId(Long propertyValueId) {
     return taskPropertyRepository.findByPropertyValueId(propertyValueId, null).getContent();
   }
@@ -68,6 +73,7 @@ public class TaskPropertyService {
    * Gets all task properties by task id and property value id.
    * @return all task properties with the given task id and property value id
    */
+  @Transactional(readOnly = true)
   public List<TaskProperty> getTaskPropertyByTaskIdAndPropertyValueId(Long taskId, Long propertyValueId) {
     return taskPropertyRepository.findByTaskIdAndPropertyValueId(taskId, propertyValueId, null).getContent();
   }
@@ -76,6 +82,7 @@ public class TaskPropertyService {
    * Deletes a task property by id.
    * @param id the id of the task property to delete
    */
+  @Transactional
   public void deleteTaskPropertyById(Long id) {
     if (!taskPropertyRepository.existsById(id))
       throw new IllegalStateException("Task property " + id + " does not exist");
