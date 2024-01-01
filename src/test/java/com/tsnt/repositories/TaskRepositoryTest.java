@@ -46,7 +46,6 @@ class TaskRepositoryTest {
     task.addTaskProperty(new TaskProperty(new PropertyValue(valueTwo, new Property(propertyNameTwo))));
     taskRepository.save(task);
     
-    System.out.println();
     Page<Task> byTitle = taskRepository.findAllByTitleContainingIgnoreCaseOrderByCreationDateDesc(taskName, null);
     assertTrue(byTitle.getContent().contains(task));
     
