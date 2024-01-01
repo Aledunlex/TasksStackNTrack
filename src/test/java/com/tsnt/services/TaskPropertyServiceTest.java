@@ -59,7 +59,7 @@ class TaskPropertyServiceTest {
     taskPropertyService.createTaskProperty(taskProperty);
     
     taskPropertyService.deleteTaskPropertyById(taskProperty.getId());
-    assertNull(taskPropertyService.getTaskPropertyById(taskProperty.getId()));
+    assertTrue(taskPropertyService.getTaskPropertyById(taskProperty.getId()).isEmpty());
   }
   
 }
