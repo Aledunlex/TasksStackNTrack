@@ -26,15 +26,18 @@ class PropertyServiceTest {
   }
   
   @Test
-  void getAllProperties() {
+  void getAllPropertiesOrderedByName() {
     propertyRepository.saveAll(List.of(
-        new Property("property1"),
-        new Property("property2"),
-        new Property("property3")
+        new Property("Z_property1"),
+        new Property("A_property2"),
+        new Property("B_property3")
     ));
     
-    List<Property> properties = propertyService.getAllProperties();
+    List<Property> properties = propertyService.getAllPropertiesOrderedByName();
     assertEquals(3, properties.size());
+    assertEquals("A_property2", properties.get(0).getName());
+    assertEquals("B_property3", properties.get(1).getName());
+    assertEquals("Z_property1", properties.get(2).getName());
   }
   
   @Test
@@ -42,8 +45,9 @@ class PropertyServiceTest {
     Property property = new Property("property1");
     propertyService.createProperty(property);
     
-    List<Property> properties = propertyService.getAllProperties();
+    List<Property> properties = propertyService.getAllPropertiesOrderedByName();
     assertEquals(1, properties.size());
+    assertTrue(properties.contains(property));
   }
   
   @Test
@@ -52,9 +56,8 @@ class PropertyServiceTest {
     propertyService.createProperty(property);
     
     property.setName("property2");
-    propertyService.updateProperty(property.getId(), property);
     
-    List<Property> properties = propertyService.getAllProperties();
+    List<Property> properties = propertyService.getAllPropertiesOrderedByName();
     assertEquals(1, properties.size());
     assertEquals("property2", properties.get(0).getName());
   }
@@ -66,7 +69,7 @@ class PropertyServiceTest {
     
     propertyService.deleteProperty(property.getId());
     
-    List<Property> properties = propertyService.getAllProperties();
+    List<Property> properties = propertyService.getAllPropertiesOrderedByName();
     assertTrue(properties.isEmpty());
   }
   

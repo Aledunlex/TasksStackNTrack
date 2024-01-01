@@ -61,31 +61,32 @@ public class PropertyService {
   }
   
   /**
-   * Gets all properties.
-   * @return a list of all properties
+   * Gets a property by name (case-insensitive).
+   * @param name the name of the property to get
+   * @return the property with the given name
    */
   @Transactional(readOnly = true)
-  public List<Property> getAllProperties() {
-    return propertyRepository.findAll();
+  public Optional<Property> getPropertyByName(String name) {
+    return propertyRepository.findByNameIgnoreCase(name);
   }
   
   /**
-   * Updates a property's name and property values.
-   * @param id the id of the property to update
-   * @param propertyDetails the property details to update
-   * @return the updated property
+   * Gets all properties ordered by name.
+   * @return a list of all properties ordered by name
    */
-  @Transactional
-  public Property updateProperty(Long id, Property propertyDetails) {
-    Property property = propertyRepository.findById(id)
-        .orElseThrow(() -> new IllegalStateException("Property with id " + id + " does not exist"));
-    
-    if (propertyDetails.getName() != null)
-      property.setName(propertyDetails.getName());
-    if (propertyDetails.getPropertyValues() != null)
-      property.setPropertyValues(propertyDetails.getPropertyValues());
-    
-    return propertyRepository.save(property);
+  @Transactional(readOnly = true)
+  public List<Property> getAllPropertiesOrderedByName() {
+    return propertyRepository.findAllByOrderByNameAsc(null).getContent();
+  }
+  
+  /**
+   * Gets all properties containing the given name ordered by name (case-insensitive).
+   * @param name the name of the properties to get
+   * @return a list of all properties containing the given name ordered by name
+   */
+  @Transactional(readOnly = true)
+  public List<Property> getAllPropertiesByNameContainingOrderedByName(String name) {
+    return propertyRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(name, null).getContent();
   }
   
   /**
