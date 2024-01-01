@@ -76,8 +76,8 @@ public class TaskService {
   
   /**
    * Gets all Tasks with a title containing the given String (case-insensitive), ordered by creation date
-   * @return List of all Tasks with a title containing the given String, ordered by creation date
    * @param title String to be contained in the title of the Tasks to be retrieved (case-insensitive)
+   * @return List of all Tasks with a title containing the given String, ordered by creation date
    */
   @Transactional(readOnly = true)
   public List<Task> getTasksByTitleContaining(String title) {
@@ -86,8 +86,8 @@ public class TaskService {
   
   /**
    * Gets all Tasks with a description containing the given String (case-insensitive), ordered by creation date
-   * @return List of all Tasks with a description containing the given String, ordered by creation date
    * @param description String to be contained in the description of the Tasks to be retrieved (case-insensitive)
+   * @return List of all Tasks with a description containing the given String, ordered by creation date
    */
   @Transactional(readOnly = true)
   public List<Task> getTasksByDescriptionContaining(String description) {
@@ -96,8 +96,8 @@ public class TaskService {
   
   /**
    * Gets all Tasks with a property whose name contains the given String (case-insensitive), ordered by creation date
-   * @return List of all Tasks with a property whose name contains the given String, ordered by creation date
    * @param name String to be contained in the name of the properties of the Tasks to be retrieved (case-insensitive)
+   * @return List of all Tasks with a property whose name contains the given String, ordered by creation date
    */
   @Transactional(readOnly = true)
   public List<Task> getTasksHavingAPropertyNameContaining(String name) {
