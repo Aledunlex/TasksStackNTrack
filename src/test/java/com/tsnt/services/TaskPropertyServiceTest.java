@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -31,7 +29,7 @@ class TaskPropertyServiceTest {
     TaskProperty taskProperty = new TaskProperty(new PropertyValue("propertyValue1", new Property("property1")));
     taskPropertyRepository.save(taskProperty);
     
-    TaskProperty retrievedTaskProperty = taskPropertyService.getTaskPropertyById(taskProperty.getId());
+    TaskProperty retrievedTaskProperty = taskPropertyService.getTaskPropertyById(taskProperty.getId()).get();
     assertEquals(taskProperty, retrievedTaskProperty);
   }
   
@@ -40,7 +38,7 @@ class TaskPropertyServiceTest {
     TaskProperty taskProperty = new TaskProperty(new PropertyValue("propertyValue1", new Property("property1")));
     taskPropertyService.createTaskProperty(taskProperty);
     
-    TaskProperty retrievedTaskProperty = taskPropertyService.getTaskPropertyById(taskProperty.getId());
+    TaskProperty retrievedTaskProperty = taskPropertyService.getTaskPropertyById(taskProperty.getId()).get();
     assertEquals(taskProperty, retrievedTaskProperty);
   }
   
@@ -51,7 +49,7 @@ class TaskPropertyServiceTest {
     
     taskProperty.setPropertyValue(new PropertyValue("propertyValue2", new Property("property2")));
     
-    TaskProperty retrievedTaskProperty = taskPropertyService.getTaskPropertyById(taskProperty.getId());
+    TaskProperty retrievedTaskProperty = taskPropertyService.getTaskPropertyById(taskProperty.getId()).get();
     assertEquals("propertyValue2", retrievedTaskProperty.getPropertyValue().getValue());
   }
   

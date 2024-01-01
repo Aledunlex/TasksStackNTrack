@@ -95,9 +95,7 @@ public class PropertyService {
    */
   @Transactional
   public void deleteProperty(Long id) {
-    Property property = propertyRepository.findById(id)
-        .orElseThrow(() -> new IllegalStateException("Property with id " + id + " does not exist"));
-    propertyRepository.delete(property);
+    propertyRepository.deleteById(id);
   }
   
 }

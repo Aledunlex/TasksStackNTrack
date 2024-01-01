@@ -71,8 +71,6 @@ public class PropertyValueService {
    */
   @Transactional
   public void deletePropertyValue(Long id) {
-    if (!propertyValueRepository.existsById(id))
-      throw new IllegalStateException("Property value " + id + " does not exist");
     propertyValueRepository.deleteById(id);
   }
   

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Provides services for task properties (CRUD operations).
@@ -47,8 +48,8 @@ public class TaskPropertyService {
    * @return the task property with the given id
    */
   @Transactional(readOnly = true)
-  public TaskProperty getTaskPropertyById(Long id) {
-    return taskPropertyRepository.findById(id).orElse(null);
+  public Optional<TaskProperty> getTaskPropertyById(Long id) {
+    return taskPropertyRepository.findById(id);
   }
   
   /**
@@ -84,8 +85,6 @@ public class TaskPropertyService {
    */
   @Transactional
   public void deleteTaskPropertyById(Long id) {
-    if (!taskPropertyRepository.existsById(id))
-      throw new IllegalStateException("Task property " + id + " does not exist");
     taskPropertyRepository.deleteById(id);
   }
   
