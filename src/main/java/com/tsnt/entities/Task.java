@@ -19,6 +19,8 @@ public class Task {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(nullable = false, updatable = false)
   private final Date creationDate = new Date();
   
   @Column(nullable = false)

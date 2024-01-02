@@ -44,5 +44,4 @@ class PropertyValueRepositoryTest {
     assertEquals(0, propertyValues.getTotalElements());
   }
   
-  
 }
