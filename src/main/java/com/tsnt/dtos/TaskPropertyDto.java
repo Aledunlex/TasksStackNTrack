@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 public class TaskPropertyDto {
   
   private Long id;
-  private TaskDto task;
   private PropertyValueDto propertyValue;
+  /* No backward reference to TaskDto to avoid circular reference. */
   
 }
