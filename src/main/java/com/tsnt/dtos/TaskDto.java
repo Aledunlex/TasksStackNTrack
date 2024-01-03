@@ -1,8 +1,9 @@
 package com.tsnt.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 import java.util.Date;
 import java.util.Set;
@@ -13,9 +14,13 @@ import java.util.Set;
 public class TaskDto {
   
   private Long id;
+  
+  @NotBlank(message = "Task title is mandatory")
   private String title;
   private String description;
   private Date creationDate;
+  
+  
   private Set<TaskPropertyDto> taskProperties;
   
 }

@@ -10,15 +10,17 @@ import com.tsnt.entities.Task;
 import com.tsnt.entities.TaskProperty;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-public class DtoMappersTest {
+@DataJpaTest
+@Import({TaskMapperImpl.class, TaskPropertyMapperImpl.class, PropertyMapperImpl.class, PropertyValueMapperImpl.class})
+class DtoMappersTest {
   
   @Autowired
   private TaskMapper taskMapper;
