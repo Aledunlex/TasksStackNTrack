@@ -1,13 +1,18 @@
 package com.tsnt.services;
 
+import com.tsnt.dtos.TaskDto;
 import com.tsnt.entities.Task;
+import com.tsnt.entities.TaskProperty;
+import com.tsnt.mappers.TaskMapper;
+import com.tsnt.mappers.TaskPropertyMapper;
 import com.tsnt.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Provides services for Task entities (CRUD operations)
@@ -20,97 +25,104 @@ public class TaskService {
    */
   private final TaskRepository taskRepository;
   
+  private final TaskMapper taskMapper;
+  
+  private final TaskPropertyMapper taskPropertyMapper;
+  
   /**
    * Creates a new TaskService
    *
    * @param taskRepository Repository for Task entities
    */
   @Autowired
-  public TaskService(TaskRepository taskRepository) {
+  public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, TaskPropertyMapper taskPropertyMapper) {
     this.taskRepository = taskRepository;
+    this.taskMapper = taskMapper;
+    this.taskPropertyMapper = taskPropertyMapper;
   }
   
-  /**
-   * Creates a new Task after checking if it already exists and formatting its title
-   *
-   * @param task Task to be created
-   * @return Created Task
-   */
   @Transactional
-  public Task createTask(Task task) {
-    if (taskRepository.findAll().contains(task))
-      throw new IllegalStateException("Task " + task.getTitle() + " already registered");
+  public Long createTask(TaskDto taskDto) {
+    Task task = taskMapper.taskDtoToTask(taskDto);
     
-    if (task.getTitle().trim().isEmpty())
-      throw new IllegalStateException("Task title cannot be empty");
+    task.setTitle(formatString(taskDto.getTitle()));
     
-    task.setTitle(
-        task.getTitle().trim().substring(0, 1).toUpperCase() + task.getTitle().substring(1)
-            .toLowerCase()
-            .replaceAll("_", " ")
-            .replaceAll("\\s+", " ")
-            .replaceAll("([A-Z])", " $1")
-            .trim());
+    return taskRepository.save(task).getId();
+  }
+  
+  @Transactional(readOnly = true)
+  public TaskDto getTaskById(Long id) {
+    Task task = taskRepository.findById(id).orElseThrow(() -> new IllegalStateException("Task " + id + " not found"));
+    return taskMapper.taskToTaskDto(task);
+  }
+  
+  @Transactional(readOnly = true)
+  public List<TaskDto> getTasksByRecency() {
+    List<Task> tasks = taskRepository.findAllByOrderByCreationDateDesc(null).getContent();
+    return tasks.stream().map(taskMapper::taskToTaskDto).toList();
+  }
+  
+  @Transactional(readOnly = true)
+  public List<TaskDto> getTasksByTitleContaining(String title) {
+    List<Task> tasks = taskRepository.findAllByTitleContainingIgnoreCaseOrderByCreationDateDesc(title, null).getContent();
+    return tasks.stream().map(taskMapper::taskToTaskDto).toList();
+  }
+  
+  @Transactional(readOnly = true)
+  public List<TaskDto> getTasksByDescriptionContaining(String description) {
+    List<Task> tasks = taskRepository.findAllByDescriptionContainingIgnoreCaseOrderByCreationDateDesc(description, null).getContent();
+    return tasks.stream().map(taskMapper::taskToTaskDto).toList();
+  }
+  
+  @Transactional(readOnly = true)
+  public List<TaskDto> getTasksHavingAPropertyNameContaining(String name) {
+    List<Task> tasks = taskRepository.findAllByTaskPropertiesPropertyValuePropertyNameContainingIgnoreCaseOrderByCreationDateDesc(name, null).getContent();
+    return tasks.stream().map(taskMapper::taskToTaskDto).toList();
+  }
+  
+  @Transactional
+  public TaskDto updateTask(TaskDto taskDto) {
+    Task task = taskRepository.findById(taskDto.getId())
+        .orElseThrow(() -> new IllegalStateException("Task " + taskDto.getId() + " not found"));
     
-    return taskRepository.save(task);
+    task.setTitle(formatString(taskDto.getTitle()));
+    
+    task.setDescription(formatString(taskDto.getDescription()));
+    
+    if (taskDto.getTaskProperties() != null && !taskDto.getTaskProperties().isEmpty()) {
+      Set<TaskProperty> taskProperties = taskDto.getTaskProperties().stream()
+          .map(taskPropertyMapper::taskPropertyDtoToTaskProperty)
+          .collect(Collectors.toSet());
+      
+      taskProperties.forEach(task::addTaskProperty);
+      
+      if (taskProperties.size() != taskDto.getTaskProperties().size())
+        throw new IllegalStateException("Error while updating task " + task.getId() + ": some TaskProperty were not found "
+            + ": " + taskDto.getTaskProperties().size() + " TaskPropertyDto were provided, but only "
+            + taskProperties.size() + " TaskProperty were found. Aborting update.");
+    }
+    
+    return taskMapper.taskToTaskDto(taskRepository.save(task));
   }
   
-  /**
-   * Gets a Task by its id
-   * @param id Id of the Task to be retrieved
-   * @return Optional containing the Task if it exists
-   */
-  @Transactional(readOnly = true)
-  public Optional<Task> getTaskById(Long id) {
-    return taskRepository.findById(id);
-  }
-  
-  /**
-   * Gets all Tasks, ordered by recency
-   * @return List of all Tasks, ordered by recency
-   */
-  @Transactional(readOnly = true)
-  public List<Task> getTasksByRecency() {
-    return taskRepository.findAllByOrderByCreationDateDesc(null).getContent();
-  }
-  
-  /**
-   * Gets all Tasks with a title containing the given String (case-insensitive), ordered by creation date
-   * @param title String to be contained in the title of the Tasks to be retrieved (case-insensitive)
-   * @return List of all Tasks with a title containing the given String, ordered by creation date
-   */
-  @Transactional(readOnly = true)
-  public List<Task> getTasksByTitleContaining(String title) {
-    return taskRepository.findAllByTitleContainingIgnoreCaseOrderByCreationDateDesc(title, null).getContent();
-  }
-  
-  /**
-   * Gets all Tasks with a description containing the given String (case-insensitive), ordered by creation date
-   * @param description String to be contained in the description of the Tasks to be retrieved (case-insensitive)
-   * @return List of all Tasks with a description containing the given String, ordered by creation date
-   */
-  @Transactional(readOnly = true)
-  public List<Task> getTasksByDescriptionContaining(String description) {
-    return taskRepository.findAllByDescriptionContainingIgnoreCaseOrderByCreationDateDesc(description, null).getContent();
-  }
-  
-  /**
-   * Gets all Tasks with a property whose name contains the given String (case-insensitive), ordered by creation date
-   * @param name String to be contained in the name of the properties of the Tasks to be retrieved (case-insensitive)
-   * @return List of all Tasks with a property whose name contains the given String, ordered by creation date
-   */
-  @Transactional(readOnly = true)
-  public List<Task> getTasksHavingAPropertyNameContaining(String name) {
-    return taskRepository.findAllByTaskPropertiesPropertyValuePropertyNameContainingIgnoreCaseOrderByCreationDateDesc(name, null).getContent();
-  }
-  
-  /**
-   * Deletes a Task by its id
-   * @param id Id of the Task to be deleted
-   */
   @Transactional
   public void deleteTask(Long id) {
     taskRepository.deleteById(id);
+  }
+  
+  /**
+   * Formats a string to be used as a title or description
+   * Capitalizes the first letter, lowercases the rest, replaces underscores with spaces, removes extra spaces
+   * and adds spaces before each capital letter
+   *
+   * @param string String to format
+   * @return Formatted string
+   */
+  private String formatString(String string) {
+    return string.substring(0, 1).toUpperCase() +
+        string.substring(1).toLowerCase()
+            .replaceAll("_", " ")
+            .replaceAll("\\s+", " ");
   }
   
 }
