@@ -12,6 +12,7 @@ import com.tsnt.mappers.TaskMapper;
 import com.tsnt.mappers.TaskMapperImpl;
 import com.tsnt.mappers.TaskPropertyMapper;
 import com.tsnt.mappers.TaskPropertyMapperImpl;
+import com.tsnt.repositories.TaskPropertyRepository;
 import com.tsnt.repositories.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ import org.springframework.context.annotation.Import;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import({TaskMapperImpl.class, TaskPropertyMapperImpl.class})
@@ -30,6 +31,9 @@ class TaskServiceTest {
   
   @Autowired
   private TaskRepository taskRepository;
+  
+  @Autowired
+  private TaskPropertyRepository taskPropertyRepository;
   
   @Autowired
   private TaskMapper taskMapper;
@@ -41,7 +45,7 @@ class TaskServiceTest {
   
   @BeforeEach
   void setUp() {
-    taskService = new TaskService(taskRepository, taskMapper, taskPropertyMapper);
+    taskService = new TaskService(taskRepository, taskMapper, taskPropertyMapper, taskPropertyRepository);
   }
   
   @Test
@@ -55,6 +59,22 @@ class TaskServiceTest {
     Task retrievedTask = taskRepository.findById(id).get();
     assertEquals(task, retrievedTask);
   }
+  
+  @Test
+  void testTaskAndPropertiesPersistence() {
+    // Créer une Task avec des TaskProperty
+    TaskDto taskDto = new TaskDto();
+    taskDto.setTitle("Task with Properties");
+    taskDto.setDescription("Task with Properties description");
+    taskDto.setTaskProperties(Set.of(new TaskPropertyDto(0L, new PropertyValueDto(0L, "Property Value 1", new PropertyDto(0L, "Property 1")))));
+    
+    Long taskId = taskService.createTask(taskDto);
+    
+    TaskDto retrievedTask = taskService.getTaskById(taskId);
+    assertNotNull(retrievedTask);
+    assertFalse(retrievedTask.getTaskProperties().isEmpty());
+  }
+  
   
   @Test
   void getTaskById() {

@@ -48,6 +48,7 @@ public class Task {
     this.title = title;
     this.description = description;
     this.taskProperties = taskProperties;
+    taskProperties.forEach(taskProperty -> taskProperty.setTask(this));
   }
   
   public void addTaskProperty(TaskProperty property) {
@@ -81,7 +82,7 @@ public class Task {
   
   @Override
   public String toString() {
-    return String.format("Task[%s, %s, %s]", this.title, this.description, this.taskProperties);
+    return String.format("Task[%s, %s, %s, %s]", this.id, this.title, this.description, this.taskProperties);
   }
   
 }

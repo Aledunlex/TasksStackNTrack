@@ -5,8 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
   Page<Task> findAllByOrderByCreationDateDesc(Pageable pageable);
@@ -20,6 +18,4 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
   // Finds all tasks who have a property with at least one TaskProperty whose Property has a name equals to the given string
   Page<Task> findAllByTaskPropertiesPropertyValuePropertyNameContainingIgnoreCaseOrderByCreationDateDesc(String name, Pageable pageable);
 
-  Optional<Task> findById(Long id);
-  
 }

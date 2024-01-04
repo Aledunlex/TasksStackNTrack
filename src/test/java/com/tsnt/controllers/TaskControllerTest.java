@@ -1,6 +1,9 @@
 package com.tsnt.controllers;
 
+import com.tsnt.dtos.PropertyDto;
+import com.tsnt.dtos.PropertyValueDto;
 import com.tsnt.dtos.TaskDto;
+import com.tsnt.dtos.TaskPropertyDto;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Set;
+
 @SpringBootTest
 class TaskControllerTest {
-  
-  /* Tests for TaskController */
   
   @Autowired
   private TaskController taskController;
@@ -32,6 +35,7 @@ class TaskControllerTest {
     TaskDto task = new TaskDto();
     task.setTitle("Test Task");
     task.setDescription("Test Description");
+    task.setTaskProperties(Set.of(new TaskPropertyDto(0L, new PropertyValueDto(0L, "Property Value 1", new PropertyDto(0L, "Property 1")))));
     assertThat(taskController.createTask(task)).isNotNull();
     
     assertThat(taskController.retrieveTaskById(task.getId())).isNotNull();
@@ -54,6 +58,7 @@ class TaskControllerTest {
     String updatedTaskDescription = "Updated Test Description";
     task.setTitle(updatedTaskTitle);
     task.setDescription(updatedTaskDescription);
+    task.setTaskProperties(Set.of(new TaskPropertyDto(0L, new PropertyValueDto(0L, "Property Value 1", new PropertyDto(0L, "Property 1")))));
     assertThat(taskController.updateTask(task)).isNotNull();
     
     TaskDto updatedTask = taskController.retrieveTaskById(id).getBody();
@@ -68,6 +73,7 @@ class TaskControllerTest {
     TaskDto task = new TaskDto();
     task.setTitle("Test Task");
     task.setDescription("Test Description");
+    task.setTaskProperties(Set.of(new TaskPropertyDto(0L, new PropertyValueDto(0L, "Property Value 1", new PropertyDto(0L, "Property 1")))));
     assertThat(taskController.createTask(task)).isNotNull();
     
     assertThat(taskController.deleteTask(task.getId())).isNotNull();

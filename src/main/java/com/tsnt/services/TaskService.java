@@ -5,6 +5,7 @@ import com.tsnt.entities.Task;
 import com.tsnt.entities.TaskProperty;
 import com.tsnt.mappers.TaskMapper;
 import com.tsnt.mappers.TaskPropertyMapper;
+import com.tsnt.repositories.TaskPropertyRepository;
 import com.tsnt.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class TaskService {
    */
   private final TaskRepository taskRepository;
   
+  private final TaskPropertyRepository taskPropertyRepository;
+  
   private final TaskMapper taskMapper;
   
   private final TaskPropertyMapper taskPropertyMapper;
@@ -35,19 +38,25 @@ public class TaskService {
    * @param taskRepository Repository for Task entities
    */
   @Autowired
-  public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, TaskPropertyMapper taskPropertyMapper) {
+  public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, TaskPropertyMapper taskPropertyMapper, TaskPropertyRepository taskPropertyRepository) {
     this.taskRepository = taskRepository;
     this.taskMapper = taskMapper;
     this.taskPropertyMapper = taskPropertyMapper;
+    this.taskPropertyRepository = taskPropertyRepository;
   }
   
   @Transactional
   public Long createTask(TaskDto taskDto) {
-    Task task = taskMapper.taskDtoToTask(taskDto);
+    Task task = new Task(taskDto.getTitle());
     
-    task.setTitle(formatString(taskDto.getTitle()));
+    // Not saving the mapped task directly here: work-around because TaskProperty wouldn't be saved otherwise
+    Task savedTask = taskRepository.save(task);
+    Long id = savedTask.getId();
+    taskDto.setId(id);
     
-    return taskRepository.save(task).getId();
+    updateTask(taskDto);
+    
+    return id;
   }
   
   @Transactional(readOnly = true)
@@ -86,7 +95,6 @@ public class TaskService {
         .orElseThrow(() -> new IllegalStateException("Task " + taskDto.getId() + " not found"));
     
     task.setTitle(formatString(taskDto.getTitle()));
-    
     task.setDescription(formatString(taskDto.getDescription()));
     
     if (taskDto.getTaskProperties() != null && !taskDto.getTaskProperties().isEmpty()) {
@@ -95,11 +103,6 @@ public class TaskService {
           .collect(Collectors.toSet());
       
       taskProperties.forEach(task::addTaskProperty);
-      
-      if (taskProperties.size() != taskDto.getTaskProperties().size())
-        throw new IllegalStateException("Error while updating task " + task.getId() + ": some TaskProperty were not found "
-            + ": " + taskDto.getTaskProperties().size() + " TaskPropertyDto were provided, but only "
-            + taskProperties.size() + " TaskProperty were found. Aborting update.");
     }
     
     return taskMapper.taskToTaskDto(taskRepository.save(task));
@@ -119,6 +122,7 @@ public class TaskService {
    * @return Formatted string
    */
   private String formatString(String string) {
+    if (string == null) return null;
     return string.substring(0, 1).toUpperCase() +
         string.substring(1).toLowerCase()
             .replaceAll("_", " ")
