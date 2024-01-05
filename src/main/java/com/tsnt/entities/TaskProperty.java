@@ -1,9 +1,8 @@
 package com.tsnt.entities;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 @Entity
 @Getter
@@ -11,7 +10,7 @@ import javax.persistence.*;
 public class TaskProperty {
   
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   
   @ManyToOne
@@ -51,15 +50,12 @@ public class TaskProperty {
       }
       return this.task.equals(otherProperty.getTask());
     }
-    if (this.task == null || otherProperty.getTask() == null) {
-      return false;
-    }
-    return this.id.equals(otherProperty.getId()) && this.task.equals(otherProperty.getTask());
+    return this.id.equals(otherProperty.getId());
   }
   
   @Override
   public int hashCode() {
-    return this.id == null ? 0 : this.id.hashCode();
+    return this.id == null ? 0 : (this.id.hashCode() * this.getClass().hashCode());
   }
   
   @Override

@@ -10,15 +10,17 @@ import com.tsnt.entities.Task;
 import com.tsnt.entities.TaskProperty;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-public class DtoMappersTest {
+@DataJpaTest
+@Import({TaskMapperImpl.class, TaskPropertyMapperImpl.class, TsntPropertyMapperImpl.class, PropertyValueMapperImpl.class})
+class DtoMappersTest {
   
   @Autowired
   private TaskMapper taskMapper;
@@ -27,7 +29,7 @@ public class DtoMappersTest {
   private TaskPropertyMapper taskPropertyMapper;
   
   @Autowired
-  private PropertyMapper propertyMapper;
+  private TsntPropertyMapper tsntPropertyMapper;
   
   @Autowired
   private PropertyValueMapper propertyValueMapper;
@@ -57,7 +59,7 @@ public class DtoMappersTest {
     taskDto.setDescription("description");
     taskDto.setTaskProperties(Set.of(
         new TaskPropertyDto(0L, new PropertyValueDto(0L, "New PropertyValue", new PropertyDto())),
-        new TaskPropertyDto(0L, new PropertyValueDto(0L, "New PropertyValue 2", new PropertyDto()))
+        new TaskPropertyDto(1L, new PropertyValueDto(1L, "New PropertyValue 2", new PropertyDto()))
     ));
     
     Task task = taskMapper.taskDtoToTask(taskDto);
@@ -103,7 +105,7 @@ public class DtoMappersTest {
     property.setId(1L);
     property.setPropertyValues(Set.of(new PropertyValue("New PropertyValue", property)));
     
-    PropertyDto propertyDto = propertyMapper.propertyToPropertyDto(property);
+    PropertyDto propertyDto = tsntPropertyMapper.propertyToPropertyDto(property);
     Set<PropertyValue> retrievedPropertyValues = property.getPropertyValues()
         .stream()
         .map(propertyValue -> propertyValueMapper.propertyValueDtoToPropertyValue(
@@ -122,7 +124,7 @@ public class DtoMappersTest {
     propertyDto.setId(1L);
     propertyDto.setName("New Property");
     
-    Property property = propertyMapper.propertyDtoToProperty(propertyDto);
+    Property property = tsntPropertyMapper.propertyDtoToProperty(propertyDto);
     
     assertEquals(propertyDto.getId(), property.getId());
     assertEquals(propertyDto.getName(), property.getName());
@@ -134,7 +136,7 @@ public class DtoMappersTest {
     propertyValue.setId(1L);
     
     PropertyValueDto propertyValueDto = propertyValueMapper.propertyValueToPropertyValueDto(propertyValue);
-    Property retrievedProperty = propertyMapper.propertyDtoToProperty(propertyValueDto.getProperty());
+    Property retrievedProperty = tsntPropertyMapper.propertyDtoToProperty(propertyValueDto.getProperty());
     
     assertEquals(propertyValue.getId(), propertyValueDto.getId());
     assertEquals(propertyValue.getValue(), propertyValueDto.getValue());
@@ -149,7 +151,7 @@ public class DtoMappersTest {
     propertyValueDto.setProperty(new PropertyDto(0L, "New Property"));
     
     PropertyValue propertyValue = propertyValueMapper.propertyValueDtoToPropertyValue(propertyValueDto);
-    PropertyDto retrievedPropertyDto = propertyMapper.propertyToPropertyDto(propertyValue.getProperty());
+    PropertyDto retrievedPropertyDto = tsntPropertyMapper.propertyToPropertyDto(propertyValue.getProperty());
     
     assertEquals(propertyValueDto.getId(), propertyValue.getId());
     assertEquals(propertyValueDto.getValue(), propertyValue.getValue());

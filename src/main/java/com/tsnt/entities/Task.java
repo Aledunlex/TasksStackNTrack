@@ -1,9 +1,9 @@
 package com.tsnt.entities;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +16,7 @@ public class Task {
   private static final String NEW_TASK = "New Task";
   
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   
   @Temporal(TemporalType.TIMESTAMP)
@@ -48,6 +48,7 @@ public class Task {
     this.title = title;
     this.description = description;
     this.taskProperties = taskProperties;
+    taskProperties.forEach(taskProperty -> taskProperty.setTask(this));
   }
   
   public void addTaskProperty(TaskProperty property) {
@@ -67,21 +68,20 @@ public class Task {
       return false;
     }
     Task otherTask = (Task) other;
-    boolean equalTitles = this.title.equalsIgnoreCase(otherTask.getTitle());
     if (this.id == null || otherTask.getId() == null) {
-      return equalTitles;
+      return this.title.equalsIgnoreCase(otherTask.getTitle());
     }
-    return this.id.equals(otherTask.getId()) && equalTitles;
+    return this.id.equals(otherTask.getId());
   }
   
   @Override
   public int hashCode() {
-    return this.title.toLowerCase().hashCode() + this.taskProperties.stream().mapToInt(TaskProperty::hashCode).sum();
+    return this.id == null ? 0 : (this.id.hashCode() * this.getClass().hashCode());
   }
   
   @Override
   public String toString() {
-    return String.format("Task[%s, %s, %s]", this.title, this.description, this.taskProperties);
+    return String.format("Task[%s, %s, %s, %s]", this.id, this.title, this.description, this.taskProperties);
   }
   
 }

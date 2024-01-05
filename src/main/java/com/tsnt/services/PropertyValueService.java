@@ -1,5 +1,6 @@
 package com.tsnt.services;
 
+import com.tsnt.dtos.PropertyValueDto;
 import com.tsnt.entities.Property;
 import com.tsnt.entities.PropertyValue;
 import com.tsnt.repositories.PropertyValueRepository;
@@ -21,6 +22,9 @@ public class PropertyValueService {
    * The property value repository.
    */
   private final PropertyValueRepository propertyValueRepository;
+  
+  @Autowired
+  private PropertyService propertyService;
   
   /**
    * Creates a new property value service.
@@ -74,4 +78,23 @@ public class PropertyValueService {
     propertyValueRepository.deleteById(id);
   }
   
+  public PropertyValue updatePropertyValueFrom(PropertyValueDto propertyValueDto) {
+    PropertyValue propertyValue = propertyValueRepository.findById(propertyValueDto.getId())
+        .orElse(null);
+    
+    if (propertyValue != null) {
+      Property property = propertyService.updateOrCreatePropertyFrom(propertyValueDto.getProperty());
+      propertyValue.setValue(propertyValueDto.getValue());
+      propertyValue.setProperty(property);
+    } else {
+      propertyValue = createPropertyValueFrom(propertyValueDto);
+    }
+    
+    return propertyValueRepository.save(propertyValue);
+  }
+  
+  public PropertyValue createPropertyValueFrom(PropertyValueDto propertyValueDto) {
+    Property property = propertyService.updateOrCreatePropertyFrom(propertyValueDto.getProperty());
+    return new PropertyValue(propertyValueDto.getValue(), property);
+  }
 }

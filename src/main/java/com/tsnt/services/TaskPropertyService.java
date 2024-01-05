@@ -1,5 +1,8 @@
 package com.tsnt.services;
 
+import com.tsnt.dtos.TaskPropertyDto;
+import com.tsnt.entities.PropertyValue;
+import com.tsnt.entities.Task;
 import com.tsnt.entities.TaskProperty;
 import com.tsnt.repositories.TaskPropertyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,9 @@ public class TaskPropertyService {
    * The task property repository.
    */
   private final TaskPropertyRepository taskPropertyRepository;
+  
+  @Autowired
+  private PropertyValueService propertyValueService;
   
   /**
    * Creates a new task property service.
@@ -80,6 +86,19 @@ public class TaskPropertyService {
   }
   
   /**
+   * Updates a task property.
+   * @param taskProperty the task property to update
+   * @return the updated task property
+   */
+  @Transactional
+  public TaskProperty updateTaskProperty(TaskProperty taskProperty) {
+  //  if (taskProperty.getId() == null || !taskPropertyRepository.existsById(taskProperty.getId()))
+  //    throw new IllegalStateException("Task property " + taskProperty.getId() + " does not exist");
+    
+    return taskPropertyRepository.save(taskProperty);
+  }
+  
+  /**
    * Deletes a task property by id.
    * @param id the id of the task property to delete
    */
@@ -88,4 +107,18 @@ public class TaskPropertyService {
     taskPropertyRepository.deleteById(id);
   }
   
+  public void updateTaskPropertyFrom(TaskPropertyDto taskPropertyDto, Task task) {
+    TaskProperty taskProperty = taskPropertyRepository.findById(taskPropertyDto.getId())
+        .orElse(null);
+    
+    if (taskProperty != null) {
+      PropertyValue updatedPropertyValue = propertyValueService.updatePropertyValueFrom(taskPropertyDto.getPropertyValue());
+      taskProperty.setPropertyValue(updatedPropertyValue);
+    } else {
+      taskProperty = new TaskProperty();
+      PropertyValue propertyValue = propertyValueService.createPropertyValueFrom(taskPropertyDto.getPropertyValue());
+      taskProperty.setPropertyValue(propertyValue);
+      task.addTaskProperty(taskProperty);
+    }
+  }
 }

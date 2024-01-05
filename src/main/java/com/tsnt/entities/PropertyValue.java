@@ -1,9 +1,8 @@
 package com.tsnt.entities;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 @Entity
 @Getter
@@ -13,13 +12,13 @@ public class PropertyValue {
   private final static String DEFAULT_VALUE = "New Value";
   
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   
   @Column(nullable = false)
   private String value;
   
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinColumn(name = "property_id", nullable = false)
   private Property property;
   
@@ -48,19 +47,15 @@ public class PropertyValue {
       return false;
     }
     PropertyValue otherPropertyValue = (PropertyValue) other;
-    boolean equalValues = this.value.equalsIgnoreCase(otherPropertyValue.getValue());
     if (this.id == null || otherPropertyValue.getId() == null) {
-      return equalValues;
+      return this.value.equalsIgnoreCase(otherPropertyValue.getValue());
     }
-    return this.id.equals(otherPropertyValue.getId()) && equalValues;
+    return this.id.equals(otherPropertyValue.getId());
   }
   
   @Override
   public int hashCode() {
-    if (this.id == null) {
-      return this.value.toLowerCase().hashCode();
-    }
-    return this.id.hashCode() + this.value.toLowerCase().hashCode();
+    return this.id == null ? 0 : (this.id.hashCode() * this.getClass().hashCode());
   }
   
   @Override
