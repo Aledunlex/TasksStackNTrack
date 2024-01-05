@@ -5,6 +5,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import HomePage from './pages/HomePage';
 
+/**
+ * App (main) component (entry point)
+ * @returns {Element} JSX App element
+ */
 function App() {
   return (
       <Router>

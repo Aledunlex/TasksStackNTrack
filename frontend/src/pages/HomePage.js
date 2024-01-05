@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TaskComponent from '../components/TaskComponent';
-import axios from 'axios';
+import { taskService } from '../services/TaskService';
+import TaskForm from "../forms/TaskForm";
 
 const PAGE_TITLE = "Tâches";
 
@@ -12,22 +13,24 @@ const HomePage = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchTasks = async () => {
             try {
-                const result = await axios('http://localhost:8080/api/tasks');
-                setData(result.data);
+                const tasks = await taskService.retrieveAllTasks();
+                setData(tasks);
             } catch (error) {
-                console.error("Erreur lors de la récupération des tâches:", error);
+                console.error('Erreur lors du chargement des tâches:', error);
             }
         };
 
-        fetchData();
+        fetchTasks();
     }, []);
 
+    /* Si aucune tâche n'a été récupérée, on affiche un message */
     if (data.length === 0) {
         return (
             <div>
                 <h1>{PAGE_TITLE}</h1>
+                <TaskForm />
                 <p>Aucune tâche à afficher</p>
             </div>
         );
@@ -36,6 +39,7 @@ const HomePage = () => {
     return (
         <div>
             <h1>{PAGE_TITLE}</h1>
+            <TaskForm />
             <ul>
                 {data.map(task => (
                     <li key={task.id}>

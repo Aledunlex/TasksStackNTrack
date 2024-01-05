@@ -1,3 +1,8 @@
+/**
+ * Composant React affichant une tâche et ses propriétés
+ * @param task la tâche à afficher
+ * @returns {JSX.Element} le composant React à afficher
+ */
 const TaskComponent = ({ task }) => {
     return (
         <div>

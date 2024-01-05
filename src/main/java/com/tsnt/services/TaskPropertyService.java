@@ -108,9 +108,11 @@ public class TaskPropertyService {
   }
   
   public void updateTaskPropertyFrom(TaskPropertyDto taskPropertyDto, Task task) {
-    TaskProperty taskProperty = taskPropertyRepository.findById(taskPropertyDto.getId())
-        .orElse(null);
-    
+    TaskProperty taskProperty = null;
+    if (taskPropertyDto.getId() != null) {
+      taskProperty = taskPropertyRepository.findById(taskPropertyDto.getId()).orElse(null);
+    }
+
     if (taskProperty != null) {
       PropertyValue updatedPropertyValue = propertyValueService.updatePropertyValueFrom(taskPropertyDto.getPropertyValue());
       taskProperty.setPropertyValue(updatedPropertyValue);
@@ -121,4 +123,5 @@ public class TaskPropertyService {
       task.addTaskProperty(taskProperty);
     }
   }
+
 }
