@@ -36,7 +36,7 @@ Par exemple, à partir deux tâches "Recette de gâteau" et "Recette de cookies"
 ### Description du modèle de données
 
 #### - Entité `Task`
-- **Rôle :** Représente une tâche individuelle avec des attributs comme le titre et la description.
+- **Rôle :** Représente une tâche individuelle avec des attributs comme le titre (obligatoire) et la description (optionnelle) au format chaîne de caractères.
 - Une `Task` peut avoir plusieurs `TaskProperty` pour associer différentes propriétés à la tâche.
 
 #### - Entité `TaskProperty`
@@ -46,8 +46,10 @@ Par exemple, à partir deux tâches "Recette de gâteau" et "Recette de cookies"
 
 #### - Entité `PropertyValue`
 - **Rôle :** Stocke la valeur spécifique d'une propriété pour une association donnée de tâche-propriété.
-- Chaque `PropertyValue` est associée à une ou plusieurs `TaskProperty`, permettant de lier des valeurs spécifiques à des tâches.
+- Chaque `PropertyValue` est associée à une ou plusieurs `Property`, permettant de lier des valeurs spécifiques à des propriétés.
+- Elle a une valeur au format au format chaîne de caractères qui permet de stocker une représentation de sa valeur.
 
 #### - Entité `Property`
 - **Rôle :** Définit une propriété générique qui peut être assignée à des tâches, comme "Durée" ou "Date d'échéance".
 - Une `Property` peut avoir plusieurs `PropertyValue`, représentant différentes valeurs pour cette propriété.
+- Une `Property`a un nom au format chaîne de caractères qui permet de nommer la propriété sur l'interface utilisateur.
