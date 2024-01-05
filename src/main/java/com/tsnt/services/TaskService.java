@@ -1,19 +1,16 @@
 package com.tsnt.services;
 
 import com.tsnt.dtos.TaskDto;
+import com.tsnt.dtos.TaskPropertyDto;
 import com.tsnt.entities.Task;
-import com.tsnt.entities.TaskProperty;
 import com.tsnt.mappers.TaskMapper;
 import com.tsnt.mappers.TaskPropertyMapper;
-import com.tsnt.repositories.TaskPropertyRepository;
 import com.tsnt.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Provides services for Task entities (CRUD operations)
@@ -26,7 +23,7 @@ public class TaskService {
    */
   private final TaskRepository taskRepository;
   
-  private final TaskPropertyRepository taskPropertyRepository;
+  private final TaskPropertyService taskPropertyService;
   
   private final TaskMapper taskMapper;
   
@@ -38,11 +35,11 @@ public class TaskService {
    * @param taskRepository Repository for Task entities
    */
   @Autowired
-  public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, TaskPropertyMapper taskPropertyMapper, TaskPropertyRepository taskPropertyRepository) {
+  public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, TaskPropertyMapper taskPropertyMapper, TaskPropertyService taskPropertyService) {
     this.taskRepository = taskRepository;
     this.taskMapper = taskMapper;
     this.taskPropertyMapper = taskPropertyMapper;
-    this.taskPropertyRepository = taskPropertyRepository;
+    this.taskPropertyService = taskPropertyService;
   }
   
   @Transactional
@@ -89,20 +86,19 @@ public class TaskService {
     return tasks.stream().map(taskMapper::taskToTaskDto).toList();
   }
   
+  // Dans TaskService
   @Transactional
   public TaskDto updateTask(TaskDto taskDto) {
     Task task = taskRepository.findById(taskDto.getId())
-        .orElseThrow(() -> new IllegalStateException("Task " + taskDto.getId() + " not found"));
+        .orElseThrow(() -> new IllegalStateException("Task not found"));
     
     task.setTitle(formatString(taskDto.getTitle()));
     task.setDescription(formatString(taskDto.getDescription()));
     
-    if (taskDto.getTaskProperties() != null && !taskDto.getTaskProperties().isEmpty()) {
-      Set<TaskProperty> taskProperties = taskDto.getTaskProperties().stream()
-          .map(taskPropertyMapper::taskPropertyDtoToTaskProperty)
-          .collect(Collectors.toSet());
-      
-      taskProperties.forEach(task::addTaskProperty);
+    if (taskDto.getTaskProperties() != null) {
+      for (TaskPropertyDto taskPropertyDto : taskDto.getTaskProperties()) {
+        taskPropertyService.updateTaskPropertyFrom(taskPropertyDto, task);
+      }
     }
     
     return taskMapper.taskToTaskDto(taskRepository.save(task));

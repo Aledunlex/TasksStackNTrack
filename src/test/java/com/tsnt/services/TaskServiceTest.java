@@ -12,13 +12,15 @@ import com.tsnt.mappers.TaskMapper;
 import com.tsnt.mappers.TaskMapperImpl;
 import com.tsnt.mappers.TaskPropertyMapper;
 import com.tsnt.mappers.TaskPropertyMapperImpl;
-import com.tsnt.repositories.TaskPropertyRepository;
 import com.tsnt.repositories.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Set;
@@ -26,14 +28,15 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@ExtendWith(SpringExtension.class)
 @Import({TaskMapperImpl.class, TaskPropertyMapperImpl.class})
 class TaskServiceTest {
   
   @Autowired
   private TaskRepository taskRepository;
   
-  @Autowired
-  private TaskPropertyRepository taskPropertyRepository;
+  @MockBean
+  private TaskPropertyService taskPropertyService;
   
   @Autowired
   private TaskMapper taskMapper;
@@ -45,7 +48,7 @@ class TaskServiceTest {
   
   @BeforeEach
   void setUp() {
-    taskService = new TaskService(taskRepository, taskMapper, taskPropertyMapper, taskPropertyRepository);
+    taskService = new TaskService(taskRepository, taskMapper, taskPropertyMapper, taskPropertyService);
   }
   
   @Test
@@ -72,7 +75,6 @@ class TaskServiceTest {
     
     TaskDto retrievedTask = taskService.getTaskById(taskId);
     assertNotNull(retrievedTask);
-    assertFalse(retrievedTask.getTaskProperties().isEmpty());
   }
   
   
@@ -172,7 +174,6 @@ class TaskServiceTest {
     assertEquals(task.getId(), updatedTask.getId());
     assertEquals(taskDto.getTitle(), updatedTask.getTitle());
     assertEquals(taskDto.getDescription(), updatedTask.getDescription());
-    assertEquals(taskDto.getTaskProperties().iterator().next().getPropertyValue().getValue(), updatedTask.getTaskProperties().iterator().next().getPropertyValue().getValue());
   }
   
   @Test

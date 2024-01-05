@@ -1,5 +1,6 @@
 package com.tsnt.services;
 
+import com.tsnt.dtos.PropertyDto;
 import com.tsnt.entities.Property;
 import com.tsnt.repositories.PropertyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,18 @@ public class PropertyService {
   @Transactional
   public void deleteProperty(Long id) {
     propertyRepository.deleteById(id);
+  }
+  
+  public Property updateOrCreatePropertyFrom(PropertyDto propertyDto) {
+    Property property = propertyRepository.findByNameIgnoreCase(propertyDto.getName())
+        .orElse(null);
+    
+    if (property == null) {
+      property = new Property();
+      property.setName(propertyDto.getName());
+    }
+    
+    return propertyRepository.save(property);
   }
   
 }

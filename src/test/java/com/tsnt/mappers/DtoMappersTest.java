@@ -59,7 +59,7 @@ class DtoMappersTest {
     taskDto.setDescription("description");
     taskDto.setTaskProperties(Set.of(
         new TaskPropertyDto(0L, new PropertyValueDto(0L, "New PropertyValue", new PropertyDto())),
-        new TaskPropertyDto(0L, new PropertyValueDto(0L, "New PropertyValue 2", new PropertyDto()))
+        new TaskPropertyDto(1L, new PropertyValueDto(1L, "New PropertyValue 2", new PropertyDto()))
     ));
     
     Task task = taskMapper.taskDtoToTask(taskDto);
