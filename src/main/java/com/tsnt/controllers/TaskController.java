@@ -13,6 +13,7 @@ import java.util.List;
  * TaskController is a Spring REST Controller that handles HTTP requests for Task resources.
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/tasks")
 public class TaskController {
   
