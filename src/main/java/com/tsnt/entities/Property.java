@@ -15,7 +15,7 @@ public class Property {
   private final static String DEFAULT_PROPERTY = "New Property";
   
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   
   @Column(nullable = false)
@@ -52,15 +52,12 @@ public class Property {
     if (this.id == null || otherProperty.getId() == null) {
       return this.name.equalsIgnoreCase(otherProperty.getName());
     }
-    return this.id.equals(otherProperty.getId()) && this.name.equalsIgnoreCase(otherProperty.getName());
+    return this.id.equals(otherProperty.getId());
   }
   
   @Override
   public int hashCode() {
-    if (this.id == null) {
-      return this.name.hashCode();
-    }
-    return this.id.hashCode() + this.name.hashCode();
+    return this.id == null ? 0 : (this.id.hashCode() * this.getClass().hashCode());
   }
   
   @Override

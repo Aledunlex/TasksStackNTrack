@@ -58,7 +58,7 @@ class PropertyTest {
     Property property2 = new Property();
     property2.setId(1L);
     property2.setName("Test Property 2");
-    assertNotEquals(property1, property2);
+    assertEquals(property1, property2);
   }
   
 }
