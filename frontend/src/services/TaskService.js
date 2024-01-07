@@ -8,7 +8,6 @@ const API_URL = 'http://localhost:8080/api';
  * @returns {Promise<any>} La tâche créée
  */
 const createTask = async (taskData) => {
-    console.log('taskData:', taskData);
     try {
         const response = await axios.post(`${API_URL}/tasks`, taskData);
         return response.data;

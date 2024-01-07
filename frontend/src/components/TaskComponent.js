@@ -5,7 +5,7 @@
  */
 const TaskComponent = ({ task }) => {
     return (
-        <div>
+        <div key={task.id}>
             <h2>{task.title}</h2>
             <p>{task.description}</p>
             {task.taskProperties && task.taskProperties.map(taskProperty =>

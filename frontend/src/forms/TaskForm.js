@@ -5,7 +5,7 @@ import { taskService } from '../services/TaskService';
  * Formulaire de création d'une nouvelle tâche.
  * @returns {Element} - Le formulaire de création d'une nouvelle tâche.
  */
-const TaskForm = () => {
+const TaskForm = ({onCreate, onUpdate}) => {
     /**
      * L'état de la tâche en cours de création.
      */
@@ -32,9 +32,7 @@ const TaskForm = () => {
         };
 
         try {
-            const newTask = await taskService.createTask(taskDataToSend);
-            console.log('Tâche créée:', newTask);
-            return newTask;
+            onCreate(taskDataToSend);
         } catch (error) {
             console.log('Erreur lors de la création de la tâche:', error);
         }
@@ -69,6 +67,8 @@ const TaskForm = () => {
                                 value: value
                             }
                         };
+                    default:
+                        return taskProperty;
                 }
             }
             return taskProperty;
