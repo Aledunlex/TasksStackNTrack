@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { taskService } from '../services/TaskService';
 
 /**
  * Formulaire de création d'une nouvelle tâche.
  * @returns {Element} - Le formulaire de création d'une nouvelle tâche.
  */
-const TaskForm = ({onCreate, onUpdate}) => {
+const TaskForm = ({ onCreate }) => {
     /**
      * L'état de la tâche en cours de création.
      */
@@ -34,7 +33,7 @@ const TaskForm = ({onCreate, onUpdate}) => {
         try {
             onCreate(taskDataToSend);
         } catch (error) {
-            console.log('Erreur lors de la création de la tâche:', error);
+            console.log('Erreur lors de la création de la tâche', error);
         }
     };
 
@@ -68,7 +67,7 @@ const TaskForm = ({onCreate, onUpdate}) => {
                             }
                         };
                     default:
-                        return taskProperty;
+                        return {...taskProperty};
                 }
             }
             return taskProperty;

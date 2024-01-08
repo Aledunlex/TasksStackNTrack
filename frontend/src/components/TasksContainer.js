@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import TaskForm from '../forms/TaskForm';
 import TaskList from '../components/TaskList';
 import { taskService } from '../services/TaskService';
+import { toast } from "react-toastify";
 
 const TasksContainer = () => {
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
-        loadTasks();
+        loadTasks().then(() => console.log('Tâches chargées !'));
     }, []);
 
     const loadTasks = async () => {
@@ -22,25 +23,33 @@ const TasksContainer = () => {
     const handleCreateTask = async (newTaskData) => {
         try {
             const newTask = await taskService.createTask(newTaskData);
-            console.log("Nouvelle tâche créée: ", newTask); // s'affiche
             setTasks(prevTasks => [newTask, ...prevTasks]);
-            console.log("Nouvel état des tâches: ", tasks); // ne s'affiche pas
         } catch (error) {
-            console.error('Erreur lors de la création de la tâche:', error);
+            console.error('Erreur lors de la création de la tâche', error);
         }
     };
 
     const handleDeleteTask = async (taskId) => {
-        console.log('taskId:', taskId);
+        try {
+            await taskService.deleteTask(taskId);
+            setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+        } catch (error) {
+            toast.error('Erreur lors de la suppression de la tâche', error);
+        }
     }
 
-    const handleUpdateTask = async (taskId, updatedData) => {
-        console.log('taskToUpdate:', updatedData);
+    const handleUpdateTask = async (updatedData) => {
+        try {
+            await taskService.updateTask(updatedData);
+            setTasks(prevTasks => prevTasks.map(task => task.id === updatedData.id ? updatedData : task));
+        } catch (error) {
+            toast.error('Erreur lors de la mise à jour de la tâche', error);
+        }
     }
 
     return (
         <div>
-            <TaskForm onCreate={handleCreateTask} onUpdate={handleUpdateTask} />
+            <TaskForm onCreate={handleCreateTask} />
             <TaskList tasks={tasks} onDelete={handleDeleteTask} onUpdate={handleUpdateTask} />
         </div>
     );

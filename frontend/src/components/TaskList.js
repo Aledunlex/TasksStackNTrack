@@ -11,7 +11,7 @@ const TaskList = ({ tasks, onDelete, onUpdate }) => {
             <ul>
                 {tasks.map(task => (
                     <li key={task.id}>
-                        <TaskComponent task={task} />
+                        <TaskComponent task={task} onDelete={onDelete} onUpdate={onUpdate} />
                     </li>
                 ))}
             </ul>
