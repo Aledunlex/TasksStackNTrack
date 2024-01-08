@@ -86,19 +86,6 @@ public class TaskPropertyService {
   }
   
   /**
-   * Updates a task property.
-   * @param taskProperty the task property to update
-   * @return the updated task property
-   */
-  @Transactional
-  public TaskProperty updateTaskProperty(TaskProperty taskProperty) {
-  //  if (taskProperty.getId() == null || !taskPropertyRepository.existsById(taskProperty.getId()))
-  //    throw new IllegalStateException("Task property " + taskProperty.getId() + " does not exist");
-    
-    return taskPropertyRepository.save(taskProperty);
-  }
-  
-  /**
    * Deletes a task property by id.
    * @param id the id of the task property to delete
    */
@@ -106,7 +93,12 @@ public class TaskPropertyService {
   public void deleteTaskPropertyById(Long id) {
     taskPropertyRepository.deleteById(id);
   }
-  
+
+  /**
+   * Updates a task's TaskProperty from a task property dto.
+   * @param taskPropertyDto the task property dto
+   * @param task the task owning the task property
+   */
   public void updateTaskPropertyFrom(TaskPropertyDto taskPropertyDto, Task task) {
     TaskProperty taskProperty = null;
     if (taskPropertyDto.getId() != null) {

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Provides services for Task entities (CRUD operations)
@@ -85,22 +87,32 @@ public class TaskService {
     List<Task> tasks = taskRepository.findAllByTaskPropertiesPropertyValuePropertyNameContainingIgnoreCaseOrderByCreationDateDesc(name, null).getContent();
     return tasks.stream().map(taskMapper::taskToTaskDto).toList();
   }
-  
-  // Dans TaskService
+
+  /**
+   * Updates a Task entity with the provided TaskDto
+   * @param taskDto TaskDto to update the Task entity with
+   * @return Updated TaskDto
+   */
   @Transactional
   public TaskDto updateTask(TaskDto taskDto) {
     Task task = taskRepository.findById(taskDto.getId())
         .orElseThrow(() -> new IllegalStateException("Task not found"));
-    
+
     task.setTitle(formatString(taskDto.getTitle()));
     task.setDescription(formatString(taskDto.getDescription()));
-    
+
     if (taskDto.getTaskProperties() != null) {
       for (TaskPropertyDto taskPropertyDto : taskDto.getTaskProperties()) {
         taskPropertyService.updateTaskPropertyFrom(taskPropertyDto, task);
       }
+
+      Set<Long> updatedPropertyIds = taskDto.getTaskProperties().stream()
+              .map(TaskPropertyDto::getId)
+              .collect(Collectors.toSet());
+
+      task.getTaskProperties().removeIf(property -> !updatedPropertyIds.contains(property.getId()));
     }
-    
+
     return taskMapper.taskToTaskDto(taskRepository.save(task));
   }
   
@@ -117,8 +129,9 @@ public class TaskService {
    * @param string String to format
    * @return Formatted string
    */
-  private String formatString(String string) {
+  protected static String formatString(String string) {
     if (string == null) return null;
+    // check that string size will
     return string.substring(0, 1).toUpperCase() +
         string.substring(1).toLowerCase()
             .replaceAll("_", " ")

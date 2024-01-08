@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.tsnt.services.TaskService.formatString;
+
 /**
  * Provides services for properties (CRUD operations).
  */
@@ -105,7 +107,7 @@ public class PropertyService {
     
     if (property == null) {
       property = new Property();
-      property.setName(propertyDto.getName());
+      property.setName(formatString(propertyDto.getName()));
     }
     
     return propertyRepository.save(property);

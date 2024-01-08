@@ -93,8 +93,9 @@ public class PropertyValueService {
     return propertyValueRepository.save(propertyValue);
   }
   
-  public PropertyValue createPropertyValueFrom(PropertyValueDto propertyValueDto) {
+  protected PropertyValue createPropertyValueFrom(PropertyValueDto propertyValueDto) {
     Property property = propertyService.updateOrCreatePropertyFrom(propertyValueDto.getProperty());
     return new PropertyValue(propertyValueDto.getValue(), property);
   }
+
 }
