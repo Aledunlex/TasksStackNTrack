@@ -11,7 +11,9 @@ const createTask = async (taskData) => {
     try {
         const response = await axios.post(`${API_URL}/tasks`, taskData);
         console.log('Tâche créée avec succès !');
-        return response.data;
+        const createdId = response.data;
+        const createdTask = await axios.get(`${API_URL}/tasks/${createdId}`);
+        return createdTask.data;
     } catch (error) {
         console.error('Erreur lors de la création de la tâche !', error);
         throw error;
