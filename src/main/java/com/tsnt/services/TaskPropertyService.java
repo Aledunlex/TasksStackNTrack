@@ -99,7 +99,8 @@ public class TaskPropertyService {
    * @param taskPropertyDto the task property dto
    * @param task the task owning the task property
    */
-  public void updateTaskPropertyFrom(TaskPropertyDto taskPropertyDto, Task task) {
+  @Transactional
+  public TaskProperty updateTaskPropertyFrom(TaskPropertyDto taskPropertyDto, Task task) {
     TaskProperty taskProperty = null;
     if (taskPropertyDto.getId() != null) {
       taskProperty = taskPropertyRepository.findById(taskPropertyDto.getId()).orElse(null);
@@ -110,10 +111,16 @@ public class TaskPropertyService {
       taskProperty.setPropertyValue(updatedPropertyValue);
     } else {
       taskProperty = new TaskProperty();
-      PropertyValue propertyValue = propertyValueService.createPropertyValueFrom(taskPropertyDto.getPropertyValue());
-      taskProperty.setPropertyValue(propertyValue);
+      taskProperty = updateTaskPropertysPropValFrom(taskPropertyDto, taskProperty);
       task.addTaskProperty(taskProperty);
     }
+    return taskPropertyRepository.save(taskProperty);
+  }
+
+  private TaskProperty updateTaskPropertysPropValFrom(TaskPropertyDto taskPropertyDto, TaskProperty taskProperty) {
+    PropertyValue propertyValue = propertyValueService.createPropertyValueFrom(taskPropertyDto.getPropertyValue());
+    taskProperty.setPropertyValue(propertyValue);
+    return taskPropertyRepository.save(taskProperty);
   }
 
 }

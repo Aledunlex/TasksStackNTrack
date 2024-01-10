@@ -100,16 +100,16 @@ public class PropertyService {
   public void deleteProperty(Long id) {
     propertyRepository.deleteById(id);
   }
-  
+
+  @Transactional
   public Property updateOrCreatePropertyFrom(PropertyDto propertyDto) {
     Property property = propertyRepository.findByNameIgnoreCase(propertyDto.getName())
-        .orElse(null);
-    
-    if (property == null) {
-      property = new Property();
+            .orElse(new Property());
+
+    if (property.getId() == null) {
       property.setName(formatString(propertyDto.getName()));
     }
-    
+
     return propertyRepository.save(property);
   }
   

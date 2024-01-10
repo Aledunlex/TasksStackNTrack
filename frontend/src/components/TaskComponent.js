@@ -22,9 +22,7 @@ const TaskComponent = ({ task, onDelete, onUpdate }) => {
     };
 
     const handleRemoveProperty = (propertyId) => {
-        console.log('original modifiedTask.taskProperties:', modifiedTask.taskProperties);
         const updatedProperties = modifiedTask.taskProperties.filter(prop => prop.id !== propertyId);
-        console.log('updatedProperties:', updatedProperties);
         setModifiedTask({ ...modifiedTask, taskProperties: updatedProperties });
     };
 
@@ -35,7 +33,7 @@ const TaskComponent = ({ task, onDelete, onUpdate }) => {
     return (
         <div key={task.id}>
             <button onClick={() => onDelete(task.id)}>Supprimer la tâche</button>
-            <button onClick={handleUpdateTask}>Appliquer les mises à jour</button>
+            <button onClick={handleUpdateTask}>Appliquer les modifications</button>
             <h2>{task.title}</h2>
             <p>{task.description}</p>
             {task.taskProperties && task.taskProperties.map(taskProperty =>
@@ -62,9 +60,7 @@ const TaskPropertyComponent = ({ taskProperty, onPropertyChange, onRemovePropert
             <PropertyValueComponent
                 propertyValue={taskProperty.propertyValue}
                 onValueChange={(newValue) => {
-                    console.log('oldValue:', taskProperty.propertyValue.value)
                     onPropertyChange(taskProperty.id, newValue);
-                    console.log('newValue:', taskProperty.propertyValue.value)
                 }}
             />
             <button onClick={() => onRemoveProperty(taskProperty.id)}>Supprimer la propriété</button>
@@ -80,14 +76,16 @@ const TaskPropertyComponent = ({ taskProperty, onPropertyChange, onRemovePropert
  * @returns {JSX.Element} le composant React à afficher
  */
 const PropertyValueComponent = ({ propertyValue, onValueChange }) => {
-    const handleInputChange = (event) => {
-        onValueChange(event.target.value);
+
+    const handleInputChange = (propertyValue, newValue) => {
+        propertyValue.value = newValue;
+        onValueChange(newValue);
     };
 
     return (
         <div>
             <label>{propertyValue.property.name} :</label>
-            <input onChange={handleInputChange} type="text" value={propertyValue.value} />
+            <input onChange={e => handleInputChange(propertyValue, e.target.value)} type="text" value={propertyValue.value} />
         </div>
     );
 
