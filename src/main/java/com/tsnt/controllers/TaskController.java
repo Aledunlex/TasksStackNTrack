@@ -13,6 +13,7 @@ import java.util.List;
  * TaskController is a Spring REST Controller that handles HTTP requests for Task resources.
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/tasks")
 public class TaskController {
   
@@ -37,9 +38,9 @@ public class TaskController {
    * @return ResponseEntity<TaskDto>
    */
   @PostMapping
-  public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto taskDto) {
-    taskDto.setId(taskService.createTask(taskDto));
-    return ResponseEntity.status(HttpStatus.CREATED).body(taskDto);
+  public ResponseEntity<Long> createTask(@RequestBody TaskDto taskDto) {
+    Long id = taskService.createTask(taskDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(id);
   }
   
   /**

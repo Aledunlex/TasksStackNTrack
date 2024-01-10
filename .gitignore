@@ -1,4 +1,4 @@
 *.class
 .idea
 target
-docs/class_uml.puml
+docs/db_model.puml

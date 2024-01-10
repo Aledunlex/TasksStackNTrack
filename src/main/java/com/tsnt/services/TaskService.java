@@ -3,6 +3,7 @@ package com.tsnt.services;
 import com.tsnt.dtos.TaskDto;
 import com.tsnt.dtos.TaskPropertyDto;
 import com.tsnt.entities.Task;
+import com.tsnt.entities.TaskProperty;
 import com.tsnt.mappers.TaskMapper;
 import com.tsnt.mappers.TaskPropertyMapper;
 import com.tsnt.repositories.TaskRepository;
@@ -10,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Provides services for Task entities (CRUD operations)
@@ -45,17 +48,37 @@ public class TaskService {
   @Transactional
   public Long createTask(TaskDto taskDto) {
     Task task = new Task(taskDto.getTitle());
-    
-    // Not saving the mapped task directly here: work-around because TaskProperty wouldn't be saved otherwise
+
     Task savedTask = taskRepository.save(task);
     Long id = savedTask.getId();
     taskDto.setId(id);
-    
+    nullifyZeroIds(taskDto);
+
+    // Handles TaskProperties creation/update/deletion, PropertyValues, Properties... linked to the new Task
     updateTask(taskDto);
     
     return id;
   }
-  
+
+  /**
+   * Setting the TaskDto, its TaskProperties, their PropertyValue and their Propertie IDs to null IF they are set to 0
+   * checks that they don't already exist will be handled by corresponding services called by updateTask()
+   * This is required because some TaskDto (and entities within) could be created with null IDs, or with IDs set to 0
+   * @param taskDto TaskDto for which inner IDs should be set to null if they are 0 (TaskProperty,
+   *                Property, and PropertyValue objects)
+   */
+  private static void nullifyZeroIds(TaskDto taskDto) {
+    if (taskDto.getTaskProperties() != null) {
+      for (TaskPropertyDto taskPropertyDto : taskDto.getTaskProperties()) {
+        if (taskPropertyDto.getId() != null && taskPropertyDto.getId() == 0) taskPropertyDto.setId(null);
+        if (taskPropertyDto.getPropertyValue().getId() != null && taskPropertyDto.getPropertyValue().getId() == 0)
+          taskPropertyDto.getPropertyValue().setId(null);
+        if (taskPropertyDto.getPropertyValue().getProperty().getId() != null && taskPropertyDto.getPropertyValue().getProperty().getId() == 0)
+          taskPropertyDto.getPropertyValue().getProperty().setId(null);
+      }
+    }
+  }
+
   @Transactional(readOnly = true)
   public TaskDto getTaskById(Long id) {
     Task task = taskRepository.findById(id).orElseThrow(() -> new IllegalStateException("Task " + id + " not found"));
@@ -85,27 +108,38 @@ public class TaskService {
     List<Task> tasks = taskRepository.findAllByTaskPropertiesPropertyValuePropertyNameContainingIgnoreCaseOrderByCreationDateDesc(name, null).getContent();
     return tasks.stream().map(taskMapper::taskToTaskDto).toList();
   }
-  
-  // Dans TaskService
+
+  /**
+   * Updates a Task entity with the provided TaskDto
+   * @param taskDto TaskDto to update the Task entity with
+   * @return Updated TaskDto
+   */
   @Transactional
   public TaskDto updateTask(TaskDto taskDto) {
     Task task = taskRepository.findById(taskDto.getId())
         .orElseThrow(() -> new IllegalStateException("Task not found"));
-    
+
     task.setTitle(formatString(taskDto.getTitle()));
     task.setDescription(formatString(taskDto.getDescription()));
-    
+
+    Set<Long> existingPropertyIds = new HashSet<>();
     if (taskDto.getTaskProperties() != null) {
       for (TaskPropertyDto taskPropertyDto : taskDto.getTaskProperties()) {
-        taskPropertyService.updateTaskPropertyFrom(taskPropertyDto, task);
+        TaskProperty updatedTaskProperty = taskPropertyService.updateTaskPropertyFrom(taskPropertyDto, task);
+        if (updatedTaskProperty != null && updatedTaskProperty.getId() != null) {
+          existingPropertyIds.add(updatedTaskProperty.getId());
+        }
       }
     }
-    
+
+    task.getTaskProperties().removeIf(property -> property.getId() != null && !existingPropertyIds.contains(property.getId()));
+
     return taskMapper.taskToTaskDto(taskRepository.save(task));
   }
   
   @Transactional
   public void deleteTask(Long id) {
+    if (!taskRepository.existsById(id)) throw new IllegalStateException("Task " + id + " not found");
     taskRepository.deleteById(id);
   }
   
@@ -117,8 +151,9 @@ public class TaskService {
    * @param string String to format
    * @return Formatted string
    */
-  private String formatString(String string) {
+  protected static String formatString(String string) {
     if (string == null) return null;
+    // check that string size will
     return string.substring(0, 1).toUpperCase() +
         string.substring(1).toLowerCase()
             .replaceAll("_", " ")

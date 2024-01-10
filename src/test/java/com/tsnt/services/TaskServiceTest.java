@@ -65,7 +65,6 @@ class TaskServiceTest {
   
   @Test
   void testTaskAndPropertiesPersistence() {
-    // Créer une Task avec des TaskProperty
     TaskDto taskDto = new TaskDto();
     taskDto.setTitle("Task with Properties");
     taskDto.setDescription("Task with Properties description");

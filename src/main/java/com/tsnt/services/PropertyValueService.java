@@ -77,7 +77,8 @@ public class PropertyValueService {
   public void deletePropertyValue(Long id) {
     propertyValueRepository.deleteById(id);
   }
-  
+
+  @Transactional
   public PropertyValue updatePropertyValueFrom(PropertyValueDto propertyValueDto) {
     PropertyValue propertyValue = propertyValueRepository.findById(propertyValueDto.getId())
         .orElse(null);
@@ -92,9 +93,11 @@ public class PropertyValueService {
     
     return propertyValueRepository.save(propertyValue);
   }
-  
-  public PropertyValue createPropertyValueFrom(PropertyValueDto propertyValueDto) {
+
+  @Transactional
+  protected PropertyValue createPropertyValueFrom(PropertyValueDto propertyValueDto) {
     Property property = propertyService.updateOrCreatePropertyFrom(propertyValueDto.getProperty());
     return new PropertyValue(propertyValueDto.getValue(), property);
   }
+
 }

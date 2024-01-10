@@ -86,19 +86,6 @@ public class TaskPropertyService {
   }
   
   /**
-   * Updates a task property.
-   * @param taskProperty the task property to update
-   * @return the updated task property
-   */
-  @Transactional
-  public TaskProperty updateTaskProperty(TaskProperty taskProperty) {
-  //  if (taskProperty.getId() == null || !taskPropertyRepository.existsById(taskProperty.getId()))
-  //    throw new IllegalStateException("Task property " + taskProperty.getId() + " does not exist");
-    
-    return taskPropertyRepository.save(taskProperty);
-  }
-  
-  /**
    * Deletes a task property by id.
    * @param id the id of the task property to delete
    */
@@ -106,19 +93,34 @@ public class TaskPropertyService {
   public void deleteTaskPropertyById(Long id) {
     taskPropertyRepository.deleteById(id);
   }
-  
-  public void updateTaskPropertyFrom(TaskPropertyDto taskPropertyDto, Task task) {
-    TaskProperty taskProperty = taskPropertyRepository.findById(taskPropertyDto.getId())
-        .orElse(null);
-    
+
+  /**
+   * Updates a task's TaskProperty from a task property dto.
+   * @param taskPropertyDto the task property dto
+   * @param task the task owning the task property
+   */
+  @Transactional
+  public TaskProperty updateTaskPropertyFrom(TaskPropertyDto taskPropertyDto, Task task) {
+    TaskProperty taskProperty = null;
+    if (taskPropertyDto.getId() != null) {
+      taskProperty = taskPropertyRepository.findById(taskPropertyDto.getId()).orElse(null);
+    }
+
     if (taskProperty != null) {
       PropertyValue updatedPropertyValue = propertyValueService.updatePropertyValueFrom(taskPropertyDto.getPropertyValue());
       taskProperty.setPropertyValue(updatedPropertyValue);
     } else {
       taskProperty = new TaskProperty();
-      PropertyValue propertyValue = propertyValueService.createPropertyValueFrom(taskPropertyDto.getPropertyValue());
-      taskProperty.setPropertyValue(propertyValue);
+      taskProperty = updateTaskPropertysPropValFrom(taskPropertyDto, taskProperty);
       task.addTaskProperty(taskProperty);
     }
+    return taskPropertyRepository.save(taskProperty);
   }
+
+  private TaskProperty updateTaskPropertysPropValFrom(TaskPropertyDto taskPropertyDto, TaskProperty taskProperty) {
+    PropertyValue propertyValue = propertyValueService.createPropertyValueFrom(taskPropertyDto.getPropertyValue());
+    taskProperty.setPropertyValue(propertyValue);
+    return taskPropertyRepository.save(taskProperty);
+  }
+
 }
