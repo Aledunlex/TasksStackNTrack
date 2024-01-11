@@ -24,7 +24,7 @@ const TasksContainer = () => {
             const tasks = await taskService.retrieveAllTasks();
             setTasks(tasks);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(RETRIEVE_ERROR_TOAST_STR);
         }
     };
@@ -35,7 +35,7 @@ const TasksContainer = () => {
             setTasks(prevTasks => [newTask, ...prevTasks]);
             toast.success(CREATE_SUCCESS_TOAST_STR);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(CREATE_ERROR_TOAST_STR);
         }
     };
@@ -43,11 +43,10 @@ const TasksContainer = () => {
     const handleDeleteTask = async (taskId) => {
         try {
             await taskService.deleteTask(taskId);
-            tasks.find(task => task.id === taskId).title;
             setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
             toast.success(DELETE_SUCCESS_TOAST_STR);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(DELETE_ERROR_TOAST_STR);
         }
     }
@@ -58,17 +57,20 @@ const TasksContainer = () => {
             setTasks(prevTasks => prevTasks.map(task => task.id === updatedData.id ? updatedData : task));
             toast.success(UPDATE_SUCCESS_TOAST_STR);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(UPDATE_ERROR_TOAST_STR);
         }
     }
 
     return (
-        <div>
-            <TaskForm onCreate={handleCreateTask} />
-            <TaskList tasks={tasks} onDelete={handleDeleteTask} onUpdate={handleUpdateTask} />
+        <div className="container-fluid my-4">
+            <TaskForm onCreate={handleCreateTask}/>
+            <div className="mt-5">
+                <TaskList tasks={tasks} onDelete={handleDeleteTask} onUpdate={handleUpdateTask}/>
+            </div>
         </div>
     );
+
 };
 
 export default TasksContainer;

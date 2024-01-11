@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import HomePage from './pages/HomePage';
 
@@ -10,6 +11,7 @@ import HomePage from './pages/HomePage';
  * @returns {Element} JSX App element
  */
 function App() {
+
   return (
       <Router>
         <ToastContainer />
@@ -18,6 +20,7 @@ function App() {
         </Routes>
       </Router>
   );
+
 }
 
 export default App;
