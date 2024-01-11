@@ -107,7 +107,7 @@ public class PropertyService {
             .orElse(new Property());
 
     if (property.getId() == null) {
-      property.setName(formatString(propertyDto.getName()));
+      property.setName(formatString(propertyDto.getName()).orElse(null));
     }
 
     return propertyRepository.save(property);
