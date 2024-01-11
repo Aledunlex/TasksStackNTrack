@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -47,7 +48,7 @@ public class TaskService {
   
   @Transactional
   public Long createTask(TaskDto taskDto) {
-    Task task = new Task(taskDto.getTitle());
+    Task task = new Task();
 
     Task savedTask = taskRepository.save(task);
     Long id = savedTask.getId();
@@ -119,8 +120,8 @@ public class TaskService {
     Task task = taskRepository.findById(taskDto.getId())
         .orElseThrow(() -> new IllegalStateException("Task not found"));
 
-    task.setTitle(formatString(taskDto.getTitle()));
-    task.setDescription(formatString(taskDto.getDescription()));
+      formatString(taskDto.getTitle()).ifPresent(task::setTitle);
+      formatString(taskDto.getDescription()).ifPresent(task::setDescription);
 
     Set<Long> existingPropertyIds = new HashSet<>();
     if (taskDto.getTaskProperties() != null) {
@@ -151,13 +152,13 @@ public class TaskService {
    * @param string String to format
    * @return Formatted string
    */
-  protected static String formatString(String string) {
-    if (string == null) return null;
-    // check that string size will
-    return string.substring(0, 1).toUpperCase() +
-        string.substring(1).toLowerCase()
-            .replaceAll("_", " ")
-            .replaceAll("\\s+", " ");
+  protected static Optional<String> formatString(String string) {
+    if (string == null || string.isBlank()) return Optional.empty();
+    if (string.length() == 1) return Optional.of(string.toUpperCase());
+    return Optional.of(string.substring(0, 1).toUpperCase() +
+                        string.substring(1).toLowerCase()
+                              .replaceAll("_", " ")
+                               .replaceAll("\\s+", " "));
   }
   
 }

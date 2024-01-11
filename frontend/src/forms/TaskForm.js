@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 
+const CREATE_TASK_STR = 'Créer la tâche';
+const ADD_NEW_TASK_PROP_STR = 'Ajouter une propriété';
+const DELETE_PROP_STR = 'Retirer la propriété';
+
 /**
- * Formulaire de création d'une nouvelle tâche.
- * @returns {Element} - Le formulaire de création d'une nouvelle tâche.
+ * Form to create a new task.
+ * @returns {Element} - The form to create a new task.
  */
 const TaskForm = ({ onCreate }) => {
-    /**
-     * L'état de la tâche en cours de création.
-     */
+
     const [task, setTask] = useState({
         title: '',
         description: '',
@@ -15,9 +17,9 @@ const TaskForm = ({ onCreate }) => {
     });
 
     /**
-     * Gère la soumission du formulaire de création d'une nouvelle tâche.
-     * @param event - L'évènement de soumission du formulaire
-     * @returns {Promise<any>} - La tâche créée
+     * Handles the form submission to create a new task.
+     * @param event - The form submission event.
+     * @returns {Promise<any>} - The promise returned by the API call to create the task.
      */
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -34,14 +36,15 @@ const TaskForm = ({ onCreate }) => {
             onCreate(taskDataToSend);
         } catch (error) {
             console.log('Erreur lors de la création de la tâche', error);
+            throw error;
         }
     };
 
     /**
-     * Gère la modification d'un des 2 champs de création d'une propriété pour une nouvelle tâche
-     * @param index - L'index de la propriété créée ou modifiée
-     * @param propertyField - Le champ modifié ("name" ou "value")
-     * @param value - La valeur du champ modifié
+     * Handles modifications of a task property (name or value).
+     * @param index - Index of the task property to modify
+     * @param propertyField - The field to modify (name or value)
+     * @param value - The new value of the modified field
      */
     const handleTaskPropertyChange = (index, propertyField, value) => {
         const updatedTaskProperties = task.taskProperties.map((taskProperty, i) => {
@@ -77,7 +80,7 @@ const TaskForm = ({ onCreate }) => {
 
 
     /**
-     * Ajoute une propriété à la tâche.
+     * Adds a new property to the task.
      */
     const addTaskProperty = () => {
         const newProperty = { propertyValue: { value: '', property: { name: '' } } };
@@ -85,8 +88,8 @@ const TaskForm = ({ onCreate }) => {
     };
 
     /**
-     * Supprime une propriété de la tâche.
-     * @param {number} index - L'index de la propriété à supprimer.
+     * Deletes a property from the task.
+     * @param {number} index - Index of the property to delete.
      */
     const removeTaskProperty = index => {
         setTask({
@@ -122,12 +125,12 @@ const TaskForm = ({ onCreate }) => {
                         onChange={e => handleTaskPropertyChange(index, 'value', e.target.value)}
                         placeholder="Valeur"
                     />
-                    <button type="button" onClick={() => removeTaskProperty(index)}>Supprimer</button>
+                    <button type="button" onClick={() => removeTaskProperty(index)}>{DELETE_PROP_STR}</button>
                 </div>
             ))}
 
-            <button type="button" onClick={addTaskProperty}>Ajouter une propriété</button>
-            <button type="submit">Créer la tâche</button>
+            <button type="button" onClick={addTaskProperty}>{ADD_NEW_TASK_PROP_STR}</button>
+            <button type="submit">{CREATE_TASK_STR}</button>
         </form>
     );
 };

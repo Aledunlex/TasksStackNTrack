@@ -4,6 +4,14 @@ import TaskList from '../components/TaskList';
 import { taskService } from '../services/TaskService';
 import { toast } from "react-toastify";
 
+const CREATE_SUCCESS_TOAST_STR = "Tâche créée avec succès !";
+const UPDATE_SUCCESS_TOAST_STR = "Tâche mise à jour avec succès !";
+const DELETE_SUCCESS_TOAST_STR = "Tâche supprimée avec succès !";
+const CREATE_ERROR_TOAST_STR = "Erreur lors de la création de la tâche.";
+const RETRIEVE_ERROR_TOAST_STR = "Erreur lors du chargement des tâches.";
+const UPDATE_ERROR_TOAST_STR = "Erreur lors de la mise à jour de la tâche.";
+const DELETE_ERROR_TOAST_STR = "Erreur lors de la suppression de la tâche.";
+
 const TasksContainer = () => {
     const [tasks, setTasks] = useState([]);
 
@@ -16,7 +24,8 @@ const TasksContainer = () => {
             const tasks = await taskService.retrieveAllTasks();
             setTasks(tasks);
         } catch (error) {
-            console.error('Erreur lors du chargement des tâches:', error);
+            console.log(error);
+            toast.error(RETRIEVE_ERROR_TOAST_STR);
         }
     };
 
@@ -24,17 +33,22 @@ const TasksContainer = () => {
         try {
             const newTask = await taskService.createTask(newTaskData);
             setTasks(prevTasks => [newTask, ...prevTasks]);
+            toast.success(CREATE_SUCCESS_TOAST_STR);
         } catch (error) {
-            console.error('Erreur lors de la création de la tâche', error);
+            console.log(error);
+            toast.error(CREATE_ERROR_TOAST_STR);
         }
     };
 
     const handleDeleteTask = async (taskId) => {
         try {
             await taskService.deleteTask(taskId);
+            tasks.find(task => task.id === taskId).title;
             setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+            toast.success(DELETE_SUCCESS_TOAST_STR);
         } catch (error) {
-            toast.error('Erreur lors de la suppression de la tâche', error);
+            console.log(error);
+            toast.error(DELETE_ERROR_TOAST_STR);
         }
     }
 
@@ -42,8 +56,10 @@ const TasksContainer = () => {
         try {
             await taskService.updateTask(updatedData);
             setTasks(prevTasks => prevTasks.map(task => task.id === updatedData.id ? updatedData : task));
+            toast.success(UPDATE_SUCCESS_TOAST_STR);
         } catch (error) {
-            toast.error('Erreur lors de la mise à jour de la tâche', error);
+            console.log(error);
+            toast.error(UPDATE_ERROR_TOAST_STR);
         }
     }
 

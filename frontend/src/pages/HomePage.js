@@ -4,8 +4,8 @@ import TasksContainer from '../components/TasksContainer';
 const PAGE_TITLE = "Tâches";
 
 /**
- * Page d'accueil de l'application: affiche la liste des tâches
- * @returns {Element} le composant React à afficher
+ * Home page of the application
+ * @returns {Element} The home page component
  */
 const HomePage = () => {
 

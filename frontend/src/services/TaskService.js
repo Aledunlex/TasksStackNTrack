@@ -3,9 +3,9 @@ import axios from 'axios';
 const API_URL = 'http://localhost:8080/api';
 
 /**
- * Créer une tâche
- * @param taskData Données de la tâche à créer
- * @returns {Promise<any>} La tâche créée
+ * Create a task
+ * @param taskData Data of the task to create
+ * @returns {Promise<any>} The created task
  */
 const createTask = async (taskData) => {
     try {
@@ -21,8 +21,8 @@ const createTask = async (taskData) => {
 };
 
 /**
- * Récupérer toutes les tâches
- * @returns {Promise<any>} Les tâches
+ * Retrieve all tasks
+ * @returns {Promise<any>} All tasks
  */
 const retrieveAllTasks = async () => {
     try {
@@ -35,9 +35,9 @@ const retrieveAllTasks = async () => {
 }
 
 /**
- * Mettre à jour une tâche
- * @param taskData Données de la tâche à mettre à jour
- * @returns {Promise<any>} La tâche mise à jour
+ * Update a task
+ * @param taskData Data of the task to update
+ * @returns {Promise<any>} The updated task
  */
 const updateTask = async (taskData) => {
     try {
@@ -51,15 +51,13 @@ const updateTask = async (taskData) => {
 }
 
 /**
- * Supprimer une tâche
- * @param taskId Id de la tâche à supprimer
- * @returns {Promise<any>} La tâche supprimée
+ * Delete a task
+ * @param taskId Id of the task to delete
  */
 const deleteTask = async (taskId) => {
     try {
-        const response = await axios.delete(`${API_URL}/tasks/${taskId}`);
+        await axios.delete(`${API_URL}/tasks/${taskId}`);
         console.log('Tâche supprimée avec succès !');
-        return response.data;
     } catch (error) {
         console.error('Erreur lors de la suppression de la tâche !', error);
         throw error;

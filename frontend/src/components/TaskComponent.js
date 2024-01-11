@@ -1,11 +1,15 @@
 import {useState} from "react";
 
+const DELETE_TASK_STR = "Supprimer la tâche";
+const APPLY_CHANGES_STR = "Appliquer les modifications";
+const DELETE_TASK_PROP_STR = "Retirer la propriété";
+
 /**
- * Composant React affichant une tâche et ses propriétés
- * @param task la tâche à afficher
- * @param onDelete la fonction à appeler lors de la suppression d'une tâche
- * @param onUpdate la fonction à appeler lors de la mise à jour d'une tâche (titre, description, propriétés)
- * @returns {JSX.Element} le composant React à afficher
+ * React component to display a task and its properties
+ * @param task the task to display
+ * @param onDelete the function to call when the task is deleted
+ * @param onUpdate the function to call when the task is updated (title, description, properties)
+ * @returns {JSX.Element} the React component to display
  */
 const TaskComponent = ({ task, onDelete, onUpdate }) => {
 
@@ -32,8 +36,8 @@ const TaskComponent = ({ task, onDelete, onUpdate }) => {
 
     return (
         <div key={task.id}>
-            <button onClick={() => onDelete(task.id)}>Supprimer la tâche</button>
-            <button onClick={handleUpdateTask}>Appliquer les modifications</button>
+            <button onClick={() => onDelete(task.id)}>{DELETE_TASK_STR}</button>
+            <button onClick={handleUpdateTask}>{APPLY_CHANGES_STR}</button>
             <h2>{task.title}</h2>
             <p>{task.description}</p>
             {task.taskProperties && task.taskProperties.map(taskProperty =>
@@ -47,11 +51,11 @@ const TaskComponent = ({ task, onDelete, onUpdate }) => {
 }
 
 /**
- * Affiche une propriété d'une tâche donnée
- * @param taskProperty la propriété à afficher
- * @param onPropertyChange la fonction à appeler lors de la mise à jour de la propriété
- * @param onRemoveProperty la fonction à appeler lors de la suppression de la propriété
- * @returns {JSX.Element} le composant React à afficher
+ * Displays a property for a given task
+ * @param taskProperty the task property to display
+ * @param onPropertyChange the function to call when the property is updated
+ * @param onRemoveProperty the function to call when the property is removed
+ * @returns {JSX.Element} the React component to display
  */
 const TaskPropertyComponent = ({ taskProperty, onPropertyChange, onRemoveProperty }) => {
 
@@ -63,17 +67,17 @@ const TaskPropertyComponent = ({ taskProperty, onPropertyChange, onRemovePropert
                     onPropertyChange(taskProperty.id, newValue);
                 }}
             />
-            <button onClick={() => onRemoveProperty(taskProperty.id)}>Supprimer la propriété</button>
+            <button onClick={() => onRemoveProperty(taskProperty.id)}>{DELETE_TASK_PROP_STR}</button>
         </div>
     );
 
 }
 
 /**
- * Affiche une propriété et sa valeur pour une tâche donnée
- * @param propertyValue le couple propriété/valeur à afficher
- * @param onValueChange la fonction à appeler lors de la mise à jour de la valeur
- * @returns {JSX.Element} le composant React à afficher
+ * Displays a property and its value for a given task
+ * @param propertyValue the property/value pair to display
+ * @param onValueChange the function to call when the value is updated
+ * @returns {JSX.Element} the React component to display
  */
 const PropertyValueComponent = ({ propertyValue, onValueChange }) => {
 
