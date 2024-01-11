@@ -81,6 +81,7 @@ Chaque tâche peut être éditée ou supprimée.
 - **Front-end**
   - JavaScript
   - React
+  - Bootstrap
   - npm
   - Toastify
 
