@@ -63,11 +63,14 @@ const TasksContainer = () => {
     }
 
     return (
-        <div>
-            <TaskForm onCreate={handleCreateTask} />
-            <TaskList tasks={tasks} onDelete={handleDeleteTask} onUpdate={handleUpdateTask} />
+        <div className="container-fluid my-4">
+            <TaskForm onCreate={handleCreateTask}/>
+            <div className="mt-5">
+                <TaskList tasks={tasks} onDelete={handleDeleteTask} onUpdate={handleUpdateTask}/>
+            </div>
         </div>
     );
+
 };
 
 export default TasksContainer;

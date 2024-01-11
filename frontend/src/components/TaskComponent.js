@@ -2,10 +2,10 @@ import {useState} from "react";
 import {toast} from "react-toastify";
 
 const DELETE_TASK_STR = "X";
-const APPLY_CHANGES_STR = "Appliquer les modifications";
+const APPLY_CHANGES_STR = "Appliquer";
 const DELETE_TASK_PROP_STR = "X";
 const PROPERTY_DELETE_WARNING_STR = "La propriété sera supprimée lors de l'application des modifications";
-const CANCEL_UNSAVED_CHANGES_STR = "Annuler les modifications non sauvegardées";
+const CANCEL_UNSAVED_CHANGES_STR = "Annuler";
 const UNSAVED_CHANGES_CANCELED_STR = "Modifications non sauvegardées annulées";
 const NOTHING_TO_CANCEL_STR = "Aucune modification à annuler";
 const ADD_NEW_PROPERTY_STR = "+";

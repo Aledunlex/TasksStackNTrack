@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+const CREATE_TASK_FORM_STR = 'Créer une tâche';
 const CREATE_TASK_STR = 'Créer la tâche';
 const ADD_NEW_TASK_PROP_STR = 'Ajouter une propriété';
 const DELETE_PROP_STR = 'Retirer la propriété';
@@ -99,40 +100,52 @@ const TaskForm = ({ onCreate }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                value={task.title}
-                onChange={e => setTask({...task, title: e.target.value})}
-                placeholder="Titre"
-            />
-            <textarea
-                value={task.description}
-                onChange={e => setTask({...task, description: e.target.value})}
-                placeholder="Description"
-            />
-            {task.taskProperties.map((property, index) => (
-                <div key={index}>
+        <div className="border p-3 shadow mb-4">
+            <h2 className="h4 mb-3">{CREATE_TASK_FORM_STR}</h2>
+            <form onSubmit={handleSubmit} className="mb-4">
+                <div className="form-group mb-3">
                     <input
                         type="text"
-                        value={property.propertyValue.property.name}
-                        onChange={e => handleTaskPropertyChange(index, 'name', e.target.value)}
-                        placeholder="Nom de la propriété"
+                        value={task.title}
+                        onChange={e => setTask({...task, title: e.target.value})}
+                        placeholder="Titre"
+                        className="form-control"
                     />
-                    <input
-                        type="text"
-                        value={property.propertyValue.value}
-                        onChange={e => handleTaskPropertyChange(index, 'value', e.target.value)}
-                        placeholder="Valeur"
-                    />
-                    <button type="button" onClick={() => removeTaskProperty(index)}>{DELETE_PROP_STR}</button>
                 </div>
-            ))}
-
-            <button type="button" onClick={addTaskProperty}>{ADD_NEW_TASK_PROP_STR}</button>
-            <button type="submit">{CREATE_TASK_STR}</button>
-        </form>
+                <div className="form-group mb-3">
+                    <textarea
+                        value={task.description}
+                        onChange={e => setTask({...task, description: e.target.value})}
+                        placeholder="Description"
+                        className="form-control"
+                    />
+                </div>
+                {task.taskProperties.map((property, index) => (
+                    <div key={index} className="form-group mb-3">
+                        <input
+                            type="text"
+                            value={property.propertyValue.property.name}
+                            onChange={e => handleTaskPropertyChange(index, 'name', e.target.value)}
+                            placeholder="Nom de la propriété"
+                            className="form-control"
+                        />
+                        <input
+                            type="text"
+                            value={property.propertyValue.value}
+                            onChange={e => handleTaskPropertyChange(index, 'value', e.target.value)}
+                            placeholder="Valeur"
+                            className="form-control"
+                        />
+                        <button type="button" className="btn btn-outline-secondary" onClick={() => removeTaskProperty(index)}>{DELETE_PROP_STR}</button>
+                    </div>
+                ))}
+                <button type="button" onClick={addTaskProperty}
+                        className="btn btn-secondary me-2">{ADD_NEW_TASK_PROP_STR}</button>
+                <button type="submit" className="btn btn-primary">{CREATE_TASK_STR}</button>
+            </form>
+        </div>
     );
+
 };
 
 export default TaskForm;

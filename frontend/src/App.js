@@ -11,6 +11,7 @@ import HomePage from './pages/HomePage';
  * @returns {Element} JSX App element
  */
 function App() {
+
   return (
       <Router>
         <ToastContainer />
@@ -19,6 +20,7 @@ function App() {
         </Routes>
       </Router>
   );
+
 }
 
 export default App;
