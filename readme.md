@@ -38,7 +38,6 @@ Pour lancer le serveur React, il faut exécuter la commande suivante depuis l'in
 
 ```bash
 npm install
-npm run build
 npm start
 ```
 
@@ -54,10 +53,11 @@ Chaque tâche peut être éditée ou supprimée.
 
 - [x] Création de tâches
 - [ ] Édition de tâches
-  - [x] Édition du titre
-  - [x] Édition de la description
+  - [ ] Édition du titre
+  - [ ] Édition de la description
   - [ ] Édition des propriétés
-    - [ ] Ajout d'une propriété
+    - [x] Ajout d'une propriété
+    - [ ] Édition du nom d'une propriété existante
     - [x] Édition de la valeur associée à une propriété existante
     - [x] Suppression d'une propriété
 - [x] Suppression de tâches
@@ -71,12 +71,12 @@ Chaque tâche peut être éditée ou supprimée.
 - **Back-end et API**
   - Java 17
   - Spring Boot
-  - Spring Data JPA (Hibernate)
-  - H2 Database
+  - Spring Data JPA
+  - H2 Database (par défaut)
   - Maven
   - JUnit
   - Lombok
-  - MapStruct (mapping entre entités et DTOs)
+  - MapStruct
 
 - **Front-end**
   - JavaScript
