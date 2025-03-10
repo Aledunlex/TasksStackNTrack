@@ -1,8 +1,8 @@
-# Tasks Stack 'N Track
+# AmalGame
 
 ## Description
 
-Tasks Stack 'N Track est une application de gestion de tâches, permettant de créer des tâches et de leur assigner des propriétés personnalisées.
+AmalGame est une application de gestion de tâches, permettant de créer des tâches et de leur assigner des propriétés personnalisées.
 
 **/!\ L'application est en cours de développement.**
 
